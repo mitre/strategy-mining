@@ -1,0 +1,22 @@
+ecj/out/production/ecj
+ecj_savetofile/out/production/ecj
+MOEAFramework-2.13/out/production/MOEAFramework-2.13/mariah/objectives.csv
+MOEAFramework-2.13/out/production/MOEAFramework-2.13/mason_example
+.vscode/launch.json
+output
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+*.sublime-project
+*.sublime-workspace
+out
+src/test/resources/rules
+src/main/java/org/mitre/strategy_mining/rules
+emd/src/main/java/org/mitre/emd/rules
+input/apefight/models/*.nlogo
+old
+.DS_Store
+emd/src/test/java/org/mitre/emd/rules

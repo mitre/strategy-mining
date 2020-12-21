@@ -1,0 +1,4 @@
+parent.0 = hpcTestParams.apeFight_02.nlogo.params
+eval.slave-name =  test
+eval.master.host = 127.0.0.1
+eval.master.port = 3000

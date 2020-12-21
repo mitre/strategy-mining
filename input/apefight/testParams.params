@@ -1,0 +1,24 @@
+parent.0 = parent.params
+
+quit-on-run-complete = false #don't stop if I find a perfect individual
+
+eval.problem = org.mitre.emd.ApeFightProblem
+gp.problem.data = org.mitre.emd.GeneralData
+
+generations = 5
+gp.tree.print-style = c
+pop.subpop.0.size = 3
+evalthreads = auto
+
+gp.koza.half.min-depth = 3
+gp.koza.half.max-depth = 4
+
+rowNumber = 3
+runDistributed = false
+
+netlogo.extensions.dir = /Applications/NetLogo 6.1.1/extensions/.bundled
+
+modelPath = ../input/apefight/apeFight_02.nlogo
+factorsPath = ../input/apefight/models/factors_ape.nls
+outputPath = ../output/output.csv
+inputPath = ../input/apefight/ApeDesignPoints.csv

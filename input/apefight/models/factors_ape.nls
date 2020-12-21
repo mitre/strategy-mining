@@ -1,0 +1,75 @@
+
+
+
+
+;; @EMD @Factor @return-type=top @parameter-type=top @parameter-type=top
+to-report zOrCombo [a b]
+  ;if member? true thinkingList [doSomething]
+  ifelse member? true (list a b) [report true][report false]
+  ;set andCombo? false
+end
+
+;; @EMD @Factor @return-type=top @parameter-type=top @parameter-type=top
+to-report zAndCombo [ a b ]
+  ;if not member? false thinkingList [doSomething]
+  ifelse not member? false (list a b)[report true][report false]
+  ;set andCombo? true
+end
+
+;; @EMD @Factor @return-type=top
+to-report minorityFighting
+  ifelse count primates with [myFighting?] / count primates < .5
+  [report true]
+  [report false]
+  ;[set thinkingList fput true thinkingList]
+  ;[set thinkingList fput false thinkingList]
+  ;[set thinkingList fput true thinkingList]
+  ;[set thinkingList fput false thinkingList]
+end
+
+;; @EMD @Factor @return-type=top
+to-report majorityFighting
+  ifelse count primates with [myFighting?] / count primates > .5
+  [report true];set thinkingList fput true thinkingList]
+  [report false];set thinkingList fput false thinkingList]
+end
+
+;; @EMD @Factor @return-type=top
+to-report majorityLinksFighting
+  ifelse count link-neighbors with [myFighting?] / count link-neighbors > .5
+  [report true];set thinkingList fput true thinkingList]
+  [report false];set thinkingList fput false thinkingList]
+end
+
+;; @EMD @Factor @return-type=top
+to-report minorityLinksFighting
+  ifelse count link-neighbors with [myFighting?] / count link-neighbors < .5
+  [report true] ;set thinkingList fput true thinkingList]
+  [report false] ;set thinkingList fput false thinkingList]
+end
+
+;; @EMD @Factor @return-type=top
+to-report sizeInThreshold
+  ifelse count primates with [myFighting?] > 0
+  [
+    ifelse mean [size] of primates with [myFighting?] - size < mySizeThold
+    [report true] ;set thinkingList fput true thinkingList]
+    [report false] ;set thinkingList fput false thinkingList]
+  ]
+  [
+    report true ;set thinkingList fput true thinkingList
+  ]
+end
+
+;; @EMD @Factor @return-type=top
+to-report rankInThreshold
+  ifelse count primates with [myFighting?] > 0
+  [
+    ifelse  mean [myRank] of primates with [myFighting?] - myRank < myHierThold
+    [report true ] ;set thinkingList fput true thinkingList]
+    [report false] ;set thinkingList fput false thinkingList]
+  ]
+  [
+    report true ;set thinkingList fput true thinkingList
+  ]
+end

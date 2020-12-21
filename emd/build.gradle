@@ -1,0 +1,82 @@
+plugins {
+    // Apply the java-library plugin to add support for Java Library
+    id 'java-library'
+    id 'java'
+}
+
+java {
+    modularity.inferModulePath = true  // enable this preview feature
+}
+
+// Set naming and package parameters for the jar file that's created in this build
+group = 'org.mitre'
+description = 'emd'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    // TODO this is MITRE specific but useful for referencing Mason and ECJ, figure out how to remove
+    // Then look in Artifactory
+    maven {
+        url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
+    }
+    maven {
+        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-release'
+    }
+    maven {
+        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-snapshot'
+    }
+    maven {
+        url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
+        credentials {
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+        }
+    }
+
+    // Finally look outside
+    maven {
+        url = 'https://plugins.gradle.org/m2/'
+    }
+    // netlogo is special and has their own repository
+    maven {
+        url = 'https://dl.bintray.com/netlogo/NetLogo-JVM/'
+    }
+
+    // Look on Github for repositories
+    maven { url 'https://jitpack.io' }
+    jcenter()
+}
+
+dependencies {
+    // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+//    implementation 'com.github.eclab:mason:20'  // for Github
+    implementation 'edu.gmu.cs:ecj:27'
+    implementation 'org.nlogo:netlogo:6.1.1'
+    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
+    implementation 'org.scala-lang:scala-library:2.12.8'
+    implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13'
+}
+
+/**
+ * This task runs the EvolutionaryModelDiscovery class and creates new Java classes in the rules package
+ */
+task runEMD(type:JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = 'org.mitre.emd.EvolutionaryModelDiscovery'
+    args = ["/Users/veneman/workspace/strategy-mining/input/apefight/testParams.params"]  // TODO - Can this be passed in as an argument to strategy_mining?
+}
+
+// Compile the Java classes generated in the rules package from running EvolutionaryModelDiscovery
+task compileEMD(type:JavaCompile) {
+    source = fileTree(dir: './src/main/java/org/mitre/emd/rules', include: '**/*.java')
+    destinationDir = file('./build/classes/java/main')
+    classpath = files(sourceSets.main.compileClasspath)
+}
+
+// Link the task dependencies. First you need to runEMD then compileEMD
+compileEMD.dependsOn runEMD
+build.dependsOn compileEMD
