@@ -1,0 +1,232 @@
+
+
+
+to reallyDecide
+    ifelse andCombo? = 0
+    [
+      set myFighting? false
+    ]
+    [
+      ifelse andCombo?
+      [
+      if not member? false thinkingList [doSomething]
+      ]
+      [
+      if member? true thinkingList [doSomething]
+      ]
+    ]
+
+end
+
+to simpleFight
+  let tally 0
+  if count link-neighbors with [myFighting?] > 0
+  [
+    foreach mySimpleFightProbList
+    [
+      x ->
+      if [myFighting?] of primate first x [if random-float 1.0 < last x [set tally tally + 1]]
+    ]
+  ]
+  ifelse howThink = "and" [if tally = 2 [set myFighting? true]][if tally > 0 [set myFighting? true]]
+end
+
+to doSomething
+  if debug? [show "Happy Day!"]
+  set myFighting? true
+end
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;; Original Monkey Brain ;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;to thinkAboutFighting
+;  let i 0
+;  if debug? [show "thinking"]
+;  foreach sort primates with [myFighting?] [x -> if link-neighbor? x [set i i + 1]]
+;  if debug? [show i]
+;  ifelse howThink = "and"
+;  ;[if random-float 1.0 < i / count link-neighbors and mean [size] of primates with [myFighting?] - size < mySizeThold and mean [myRank] of primates with [myFighting?] - myRank < myHierThold [doSomething]]
+;  ;[if lessThan random-float 1.0 (dividedBy i countFighting link-neighbors) and lessThan minus meanFrom countFighting primates "size" size mySizeThold and lessThan minus meanFrom countFighting primates "myRank" size myHierThold [doSomething]]
+;  ;[if run-result (word "lessThan random-float 1.0 (dividedBy i countFighting link-neighbors)" " and " "lessThan minus meanFrom countFighting primates size size mySizeThold" " and " "lessThan minus meanFrom countFighting primates " "myRank" " myRank myHierThold") [doSomething]]
+;  [if run-result andCombine ["lessThan random-float 1.0 (dividedBy i countFighting link-neighbors)" "lessThan minus meanFrom countFighting primates size size mySizeThold" "lessThan minus meanFrom countFighting primates " "myRank" " myRank myHierThold"] [doSomething]]
+;  ;[if random-float 1.0 < i / count link-neighbors or mean [size] of primates with [myFighting?] - size < mySizeThold or mean [myRank] of primates with [myFighting?] - myRank < myHierThold [doSomething]]
+;  ;[if run-result (word "lessThan random-float 1.0 (dividedBy i countFighting link-neighbors)" " or " "lessThan minus meanFrom countFighting primates size size mySizeThold" " or " "lessThan minus meanFrom countFighting primates " "myRank" " myRank myHierThold") [doSomething]]
+;  ;[if run-result orCombine ["lessThan random-float 1.0 (dividedBy 1 countFighting link-neighbors)" "lessThan minus meanFrom fightingApes size size mySizeThold" "lessThan minus meanFrom countFighting primates myRank myRank myHierThold"] [doSomething]]
+;                           ;"lessThan random-float 1.0 (dividedBy i countFighting link-neighbors) or lessThan minus meanFrom countFighting primates size size mySizeThold or lessThan minus meanFrom countFighting primates  or myRank or  myRank myHierThold"
+;  ;[if run-result orCombine [(lessThan random-float 1.0 (dividedBy 1 countFighting link-neighbors)) (lessThan minus meanFrom fightingApes size size mySizeThold) (lessThan minus meanFrom countFighting primates myRank myRank myHierThold)] [doSomething]]
+;  ;[if run-result orCombine [("lessThan random-float 1.0 dividedBy countFighting link-neighbors count link-neighbors") ("lessThan minus meanFrom size fightingApes size mySizeThold") ("lessThan minus meanFrom countFighting primates myRank myRank myHierThold")] [doSomething]]
+;  [if run-result orCombine [( "lessThan random-float 1.0 dividedBy countFighting link-neighbors count link-neighbors") ("lessThan minus meanFrom size fightingApes size mySizeThold") ("lessThan minus meanFrom countFighting primates myRank myRank myHierThold")] [doSomething]]
+;end
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; old stuff that was tried ;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;to test3
+;  let t ["a" "b" "c" "d"]
+;  let p ""
+;  foreach t [x -> set p (word p " " x)]
+;  show p 
+;end
+;
+;to test2
+;;  show lessThan random-float 1.0 countFighting primates
+;end
+;
+;;let t "myRank"
+;;show run-result (word " mean [" t "] of primates")
+
+
+
+
+
+;to-report lessThan [a b]
+;  report a < b
+;end
+;
+;to-report greaterThan [a b]
+;  report b > a
+;end
+;
+;to-report minus [a b]
+;  report a - b
+;end
+;
+;to-report plus [a b]
+;  report a + b
+;end
+;
+;to-report maxFrom [l v]
+;  report run-result (word " max [" v "] of " l)
+;end
+;
+;to-report maxOf [l] ;; l should be a list
+;  report max l
+;end
+;
+;to-report meanFromPrimates [v]
+;  let t run-result (word "mean [" v "] of primates")
+;  if debug? [show (word "This is t from the meanFromPrimates reporter: " t)]
+;  report (word t)
+;end
+;
+;to-report meanFrom [l] ;; is a two member list first is an variable the second is a agentset both need to be passed in as strings!
+;  if debug? [show (word "mean [" first l "] of " last l)]
+;  ;report run-result (word "mean [" first l "] of " last l )
+;  report (word "mean [" first l "] of " last l )
+;end
+;
+;
+;;to-report meanFrom_oldAndBad [l v]
+;;  show word "l: " l
+;;  show l
+;;  show word "v: " v
+;;  show is-agentset? l
+;;  ;if is-agentset? l [set l sort l]
+;;  ifelse is-string? v
+;;  [report run-result (word " mean [" v "] of " l) ]
+;;  [
+;;    set v but-first but-last v
+;;    report run-result (word " mean [" "v" "] of " l)
+;;  ]
+;;end
+;
+;to-report meanOf [l] ;; l should be a list
+;  report mean l
+;end
+;
+;to-report minFrom [l v]
+;  report run-result (word " min [" v "] of " l)
+;end
+;
+;to-report minOf [l] ;; l should be a list
+;  report min l
+;end
+;
+;to-report dividedBy [a b]
+;  ifelse b = 0
+;  [report 0]
+;  [report a / b]
+;end
+;
+;to-report multipliedBy [a b]
+;  report a * b
+;end
+;
+;to-report countFighting [l]
+;  report count l with [myFighting?]
+;end
+;
+;to-report fightingApes
+;  report primates with [myFighting?]
+;end
+;
+;to-report nonfightingApes
+;  report primates with [not myFighting?]
+;end
+;
+;to-report countNotFighting [l]
+;  report count l with [not myFighting?]
+;end
+;
+;to-report orCombine [l]
+;  ;show "OR"
+;  let i 0
+;  let q ""
+;  while [i < length l]
+;  [
+;    ifelse i < length l - 1
+;    [set q (word q item i l " or ")]
+;    [set q word q item i l] 
+;    set i i + 1
+;  ]
+;  show q
+;  report run-result q
+;end
+;
+;to-report orCombineSimple [l]
+;  ifelse member? true l
+;  [report true]
+;  [report false]
+;end
+;  
+;
+;to-report andCombine [l]
+;  ;show "AND"
+;  let i 0
+;  let q ""
+;  while [i < length l]
+;  [
+;    ifelse i < length l - 1
+;    [set q (word q item i l " and ")]
+;    [set q word q item i l] 
+;    set i i + 1
+;  ]
+;  show q
+;  report q
+;end
+;
+;to test
+;  let i 0
+;  let q ""
+;  let t ["a" "b" "c"]
+;  while [i < length t]
+;  [
+;    ifelse i < length t - 1
+;    [set q (word q item i t " or ")]
+;    [set q word q item i t] 
+;    set i i + 1
+;  ]
+;  show q
+;end
+;
+;
+;
+;
+;
+;
