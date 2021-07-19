@@ -1,4 +1,4 @@
-parent.0 = testParams.params
+parent.0 = parent.params
 
 # The gp parameters here are how ECJ sets up a GP problem
 

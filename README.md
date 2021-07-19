@@ -109,7 +109,7 @@ Building the project creates an application bundle in `strategy_mining/build/dis
 2. Navigate to that location
 3. Run with the desired program arguments (similar to [running with Gradle](#Run-with-Gradle))
 ```
-./strategy_mining-1.0-SNAPSHOT/bin/strategy_mining -file <path_to>/strategy-mining/input/apefight/testParams.apeFight_02.nlogo.params
+./strategy_mining-1.0-SNAPSHOT/bin/strategy_mining -file <path_to>/strategy-mining/input/apefight/experiment.apeFight.nlogo.params
 ```
 
 ### Distributed run on an HPC cluster with Slurm scheduler
@@ -170,7 +170,7 @@ Interactions among parject components are shown in the diagram here.
 2. A factors file written in Netlogo (strongly typed)
     - must be of type .nls
     - Check out the example code in `input/apefight/models/factors_ape.nls`
-3. Parameter file: parent.params (
+3. Parameter file: parent.params
     - *This file is not modified by the end user.*
 4. Customized parameter file
     - must be of type .params
@@ -219,7 +219,7 @@ Interactions among parject components are shown in the diagram here.
         ```java
         double value = (Double)metrics.get(1);
         ```
-6. Modify the systemProp.params variable in `emd/gradle.properties` to point to the location of the parameters file created in step 4. The location of the .params file is relative to the top level directory of strategy-mining from the emd directory (e.g. `../input/apefight/testParams.params`). 
+6. Modify the systemProp.params variable in `emd/gradle.properties` to point to the location of the parameters file created in step 4. The location of the .params file is relative to the top level directory of strategy-mining from the emd directory (e.g. `../input/apefight/experiment.apefight.nlogo.params`). 
 7. An example file is included for running on an HPC with a SLURM scheduler in `input/apefight/apeFight.sh`.
 
 #### Directory structure

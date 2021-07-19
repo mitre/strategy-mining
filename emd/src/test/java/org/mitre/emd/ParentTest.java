@@ -21,36 +21,32 @@ public class ParentTest {
     public void init() {
         this.paramsPath = System.getProperty("params");
         if(this.paramsPath == null){
-            this.paramsPath = "../input/apefight/experiment.apeFight.nlogo.params";
+            this.paramsPath = "../emd/src/test/resources/experiment.apeFight.nlogo.params";
         }
         this.paramsFile = new File(this.paramsPath);
 
-        this.pathBase = Paths.get("../emd/src/main/java/org/mitre/emd");
-        try {
+        try (InputStream input = new FileInputStream(this.paramsPath)) {
             // open the original params file, and find the modelPath parameter
             // store the found parameter in appropriate variables
-            Scanner scan = new Scanner(this.paramsFile);
+            this.paramsFile = new File(this.paramsPath);
+            Path topLevel = Paths.get("").toAbsolutePath().getParent();
+            this.pathBase = Paths.get(topLevel.toString() + File.separator + "emd", "src/main/java/org/mitre/emd");
 
-            while(scan.hasNextLine()) {
-                String line = scan.nextLine();
+            Properties prop = new Properties();
 
-                if(line.contains("modelPath")) {
-                    this.modelPath = line.split("=")[1].strip();
-                    this.modelFile = new File(this.modelPath);
-                }
+            // load the input params file
+            prop.load(input);
 
-                if(line.contains("factorsPath")) {
-                    this.factorsPath = line.split("=")[1].strip();
-                    this.factorsFile = new File(this.factorsPath);
-                }
+            this.modelPath = prop.getProperty("modelPath");
+            this.modelFile = new File(this.modelPath).getCanonicalFile();
 
-                if(line.contains("outputPath")) {
-                    this.outputPath = line.split("=")[1].strip();
-                }
-            }
-            scan.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            this.factorsPath = prop.getProperty("factorsPath");
+            this.factorsFile = new File(this.factorsPath);
+
+            this.outputPath = prop.getProperty("outputFileDirectory") + prop.getProperty("outputFileName");
+
+        } catch (IOException ex) {
+            System.err.println("Error loading params file." + ex.toString());
         }
     }
 
