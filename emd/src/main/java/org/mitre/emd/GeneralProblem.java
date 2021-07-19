@@ -33,8 +33,6 @@ import org.nlogo.headless.HeadlessWorkspace;
 public class GeneralProblem extends GPProblem {
     private static final long serialVersionUID = 1;
     private List<String> factors = null;
-    // private Path topLevel = null;
-    // private Path pathBase = null;
     public String fileContents;
     public String outputPath;
 
@@ -51,7 +49,10 @@ public class GeneralProblem extends GPProblem {
         File f = new File(path).getAbsoluteFile();
         StringBuilder contents = new StringBuilder();
 
-        outputPath = state.parameters.getString(new Parameter("outputPath"), null);
+        String outputFileName = state.parameters.getString(new Parameter("outputFileName"), null);
+        String outputFileDirectory = state.parameters.getString(new Parameter("outputFileDirectory"), null);
+        outputPath = outputFileDirectory + File.separator + outputFileName;
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
 
@@ -131,11 +132,9 @@ public class GeneralProblem extends GPProblem {
         }
 
         String netlogo_extensions = state.parameters.getString(new Parameter("netlogo.extensions.dir"), null);
-            if(netlogo_extensions != null){
-        System.setProperty("netlogo.extensions.dir", netlogo_extensions);
-            }
-		System.out.println("Extension directory: " + netlogo_extensions);
-        String outputPath = state.parameters.getString(new Parameter("outputPath"), null);
+        if(netlogo_extensions != null){
+            System.setProperty("netlogo.extensions.dir", netlogo_extensions);
+        }
 
         runCustomModels(state, ind, newPath, rules);
     }
