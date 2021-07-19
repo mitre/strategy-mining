@@ -4,6 +4,8 @@ import ec.EvolutionState;
 import ec.Evolve;
 import ec.util.*;
 
+//import org.apache.log4j.LogManager;
+//import org.apache.log4j.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -11,6 +13,19 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.mitre.emd.EvolutionaryModelDiscovery;
+import org.mitre.emd.output.OutputWriter;
+import org.mitre.emd.output.beans.ResultsBean;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 /**
  * Main application entry point for running StrategyMining.
@@ -18,11 +33,15 @@ import org.apache.commons.cli.ParseException;
  * StrategyMining can be run as either a standalone application or as distributed application deployed on an HPC cluster.
  */
 public class StrategyMining {
-    public StrategyMining(){}
+    public static final Logger logger = LogManager.getLogger(StrategyMining.class);
+    static String inputFile = "";
+
+    public StrategyMining(){
+        setupOutput();
+    }
 
     public static void main(String[] args) {
         int numArgs = 0;
-        String inputFile = "";
         Boolean runDistributed = false;
         String nodes = "";
         String outputPath = "";
@@ -37,7 +56,7 @@ public class StrategyMining {
         Option optDistributed = Option.builder("d").argName("isDistributed").hasArg().desc("Flag that determines whether to run in distributed mode.").build();
         Option optNodes = Option.builder("n").argName("nodes").hasArg().desc("List of nodes for running distributed.").build();
         Option optOutputPath = Option.builder("op").argName("outputPath").hasArg().desc("Path to write output.").build();
-        Option optRowNumber = Option.builder("rn").argName("rowNumber").hasArg().desc("Row number to use for design point.").build();
+        Option optRowNumber = Option.builder("rn").argName("rowNumber").hasArg().desc("Row number.").build();
         Option optReplication = Option.builder("rp").argName("replication").hasArg().desc("Replication number.").build();
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
@@ -142,6 +161,7 @@ public class StrategyMining {
     }
 
     private void runStandalone(String[] parsedArgs) {
+        long startTime = System.currentTimeMillis();
         ParameterDatabase dbase = Evolve.loadParameterDatabase(parsedArgs);
         ParameterDatabase child = new ParameterDatabase(); 
 
@@ -149,9 +169,38 @@ public class StrategyMining {
         Output out = Evolve.buildOutput();
         EvolutionState evaluatedState = Evolve.initialize(child, 0, out); 
         evaluatedState.run(EvolutionState.C_STARTED_FRESH);
+
+        logger.info("Run time: " + (System.currentTimeMillis() - startTime)/Math.pow(10,3) + "s");
     }
 
     private void runDistributed(String[] parsedArgs) {
         ec.eval.Slave.main(parsedArgs);
+    }
+
+    private void setupOutput() {
+        try (InputStream input = new FileInputStream(inputFile)) {
+            Properties prop = new Properties();
+
+            // load the input params file
+            prop.load(input);
+
+            String outputDirectoryString = prop.getProperty("outputFileDirectory");
+            if(outputDirectoryString == null){
+                System.err.println("outputFileDirectory property in " + inputFile + " not found. Setting to " +
+                        "default value of \"../output/\"");
+                outputDirectoryString = "../output/";
+            }
+            String outputFileName = prop.getProperty("outputFileName");
+            if(outputFileName == null){
+                System.err.println("outputFileName property in " + inputFile + " not found. Setting to " +
+                        "default value of \"output.csv\"");
+                outputFileName = "output.csv";
+            }
+            File outputDirectory = Path.of(outputDirectoryString).toAbsolutePath().toFile();
+            OutputWriter.initOutput(outputFileName, ResultsBean.fieldMapping,ResultsBean.header,ResultsBean.processors,outputDirectory);
+        } catch (IOException ex) {
+            System.err.println("Error loading params file.");
+//            logger.error("Error loading params file.",ex);
+        }
     }
 }

@@ -1,0 +1,12 @@
+{
+    "factors":[
+        {
+            "class_name": "ZAndCombo",
+            "class_package": "org.mitre.emd.models.students",
+            "description": "zAndCombo",
+            "return_type": "buz",
+            "children_types": ["bar","foo"],
+            "eval_method": "method2"
+        }
+    ]
+}

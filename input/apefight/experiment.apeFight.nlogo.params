@@ -1,0 +1,40 @@
+parent.0 = factors.apeFight.nlogo.params
+
+#don't stop if I find a perfect individual
+quit-on-run-complete = false 
+
+eval.problem = org.mitre.emd.ApeFightProblem
+
+# Data class
+gp.problem.data = org.mitre.emd.GeneralData
+
+generations = 3
+gp.tree.print-style = c
+pop.subpop.0.size = 5
+breedthreads = 1
+evalthreads = 3
+# Must have a seed for each evalthread
+seed.0 = -1775080042 
+seed.1 = -1775080041 
+seed.2 = -1775080040 
+
+replication = 1
+ticks = 1200
+runDistributed = false
+
+gp.koza.half.min-depth = 3
+gp.koza.half.max-depth = 5
+
+# rowNumber is used for comparing to previous runs of the model
+rowNumber = 9
+inputPath = ../input/apefight/ApeDesignPoints.csv
+
+modelPath = ../input/apefight/apeFight_02.nlogo
+factorsPath = ../input/apefight/models/factors_ape.nls
+outputFileName = ape_fight_netlogo_output.csv
+outputFileDirectory = ../output/
+
+# NetLogo models need to have the NetLogo application extensions location specified
+# netlogo.extensions.dir = /c/Program Files/NetLogo 6.1.1/app/extensions/.bundled
+# netlogo.extensions.dir = C:\\Program Files\\NetLogo 6.1.1\\app\\extensions\\.bundled
+netlogo.extensions.dir = /Applications/NetLogo 6.1.1/extensions/.bundled

@@ -6,11 +6,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import java.io.*;
-import java.nio.file.Path;
 import java.util.*;
-import java.nio.file.*;
-
-import org.mitre.emd.EvolutionaryModelDiscovery;
 
 /**
  * The EvolutionaryModelDiscoveryTesting class contains functions designed to test the correctness of the 
@@ -50,7 +46,9 @@ public class EvolutionaryModelDiscoveryTesting extends ParentTest {
                     line = scan.nextLine();
                     String[] splitLine = line.split(" ");
                     String factor = splitLine[1];
-                    File ruleFile = new File(Paths.get("").toAbsolutePath() + "/src/main/java/org/mitre/emd/rules/" + factor + ".java");
+                    File ruleFile = new File("../emd/src/main/java/org/mitre/emd/rules/" + factor + ".java");
+                    // File ruleFile = new File(Paths.get("").toAbsolutePath() + "/src/main/java/org/mitre/emd/rules/" + factor + ".java");
+                    System.out.println(ruleFile.toString());
 
                     // assert rules files are created in correct directory
                     assertTrue(ruleFile.exists());
@@ -119,8 +117,8 @@ public class EvolutionaryModelDiscoveryTesting extends ParentTest {
      */
     @Test
     public void testNewParamsFile() {
-        String newParamsName = getParamsPath().substring(0, getParamsPath().length()-7) + "." + getModelFile().getName() + ".params";
-        File newParamsFile = new File(newParamsName);
+        setNewParams();
+        File newParamsFile = getNewParamsFile();
 
         // assert new params file is created in correct directory
         assertTrue(newParamsFile.exists());
@@ -229,16 +227,5 @@ public class EvolutionaryModelDiscoveryTesting extends ParentTest {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * This function verifies that the output file is created in the correct directory.
-     */
-    @Test
-    public void testOutputFile() {
-        File outputFile = new File(getOutputPath());
-
-        // assert output file is created in the correct directory
-        assertTrue(outputFile.exists());
     }
 }

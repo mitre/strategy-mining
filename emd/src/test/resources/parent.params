@@ -38,6 +38,7 @@ pop.subpop.0.duplicate-retries =	0
 
 #########
 
+# Set the fitness finding method
 pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 
 #

@@ -18,21 +18,32 @@ The following are the steps needed to to build and run a model.
     
     - See `input/apefight` for an example.
     
-2. To setup your parameters files the following need parameters in `input/<project>/testParams.params` need to be modified to point to locations on your system:
+2. To setup your parameters files the following need parameters in `input/<project>/experiment.<project>.<platform>.params` need to be modified to point to locations on your system:
     ```properties
     modelPath = ../input/apefight/apeFight_02.nlogo
     factorsPath = ../input/apefight/models/factors_ape.nls
     netlogo.extensions.dir = /Applications/NetLogo 6.1.1/app/extensions/.bundled
-    outputPath = ../output/output.csv
+    outputFileName = ape_fight_netlogo_output.csv
+    outputFileDirectory = ../output/
     inputPath = ../input/apefight/ApeDesignPoints.csv
     ```
+
+    - For users running on Windows the `netlogo.extensions.dir` will need to be changed to the location that NetLogo is installed on their system (e.g. `netlogo.extensions.dir=C:\\Program Files\\NetLogo 6.1.1\\app\\extensions\\.bundled`).
+    
 3. Once the parameters are set, build the application after navigating to `strategy-mining/strategy_mining`:
 
     ```bash
-    gradle build -PparamsFile="../input/apefight/testParams.params" 
+    gradle build 
     ```
 
     - This will create the Strategy Mining application in accordance with how the user created an EMD model. The Ape Fight model is provided as an example of an EMD model. Models are placed in `input/<model_name>` where `<model_name>` is the name of the model (`apefight` for the provided example). 
+
+    - (Advanced usage) The parameters file used in the build can be set in `emd/build.gradle` under the `runEMD` task or by passing an additional argument to build like so:
+
+    ```bash
+    gradle build -PparamsFile="../input/apefight/experiment.apeFight.nlogo.params"
+    ```
+
     - The argument `-PparamsFile="..."` tells the build where to find the params file for the model you're building. The params file path can be either fully qualified or relative to the `emd` directory as shown here.
 
 ### Running the model
@@ -44,13 +55,21 @@ The easiest way to run your model is to use Gradle to run it. See [Building the 
 From a command line interface, navigate to the `strategy-mining/strategy_mining/` directory and run:
 
 ```bash
-gradle run --args="-f ../input/apefight/testParams.apeFight_02.nlogo.params"
+gradle run
+
+```
+
+This will run the model with the default parameters file set in the run task in `emd/build.gradle`. As an alternative you can change the parameters file that's used by passing it in as an argument on the command line as follows:
+
+
+```bash
+gradle run --args="-f ../input/apefight/experiment.apeFight.nlogo.params"
 ```
 
 The `-f` (input file) argument is required while the additional parameters below can be provided as options. For instance, to set the design point row number to be different to what is set in the parameters file you would run:
 
 ```bash
-gradle run --args="-f ../input/apefight/testParams.apeFight_02.nlogo.params -rn 3"
+gradle run --args="-f ../input/apefight/experiment.apeFight.nlogo.params -rn 3"
 ```
 
 ```bash
@@ -139,6 +158,8 @@ Specific instructions for using Strategy Mining on an HPC cluster with the Slurm
 
 An example project `input/apefight` is provided which illustrates how to use this tool for a NetLogo based model. The following steps are a guide to how to convert a NetLogo model for use with Strategy Mining. An example using a MASON model is forthcoming. 
 
+### Model design with NetLogo
+
 Interactions among parject components are shown in the diagram here.
 
 ![EMD Component Interactions](img/netlogo_ecj_integration_tool_class_diagram.jpg)
@@ -150,13 +171,12 @@ Interactions among parject components are shown in the diagram here.
     - must be of type .nls
     - Check out the example code in `input/apefight/models/factors_ape.nls`
 3. Parameter file: parent.params (
-    
     - *This file is not modified by the end user.*
 4. Customized parameter file
     - must be of type .params
-    - Check out the example in `input/apefight/testParams.params`
+    - Check out the example in `input/apefight/experiment.apefight.nlogo.params`
     - Required parameters:
-        - `parent.0 = parent.params` (leave this alone)
+        - `parent.0 = factors.[model].[platform].params` for Ape Fight with NetLogo this is `parent.0 = factors.apefight.nlogo.params`
         - `eval.problem = ` package location of GeneralProblem (or more likely, your customized subclass of GeneralProblem) relative to src (i.e. `examples.ApeFight.GeneralProblem`)
         - `gp.problem.data = ` package location of GeneralData relative to src (i.e. `examples.ApeFight.GeneralData`)
         - `generations = 10` replace 10 with the number of desired generations. Note that if any individual ever has a fitness <= 0, the entire program will stop because it will interpret that individual as perfect.
@@ -183,10 +203,8 @@ Interactions among parject components are shown in the diagram here.
 5. Customized subclass of GeneralProblem.java
     - Change the package (first line of the file) to be the package location relative to src (i.e. `examples.ApeFight`)
     - Change `public String[] metricNames() { }` to return an array of Strings that the netlogo model can report
-        
         - these will be used as the metrics for calculating fitness
     - Change `public String[] setupCommands() { }` to return an array of Strings that should be called in the netlogo model before running.
-        
         - the default is: `return new String[] { "setup" };`
     - Change `public double calculateFitness(List<Object> metrics) { }` to do any analysis you need using the list of metrics you specified in `metricNames()`
         - This is a little tricky, depending on the data types stored in each metric. For example, if the first metric is a list, you'll need to cast it and convert it into an array in Java. 
@@ -201,12 +219,12 @@ Interactions among parject components are shown in the diagram here.
         ```java
         double value = (Double)metrics.get(1);
         ```
-6. Modify the args parameter in the runEMD task in `emd/build.gradle` to point to the location of the parameters file created in step 4. The location of the .params file is relative to the top level directory of strategy-mining from the emd directory (e.g. `../input/apefight/testParams.params`). 
+6. Modify the systemProp.params variable in `emd/gradle.properties` to point to the location of the parameters file created in step 4. The location of the .params file is relative to the top level directory of strategy-mining from the emd directory (e.g. `../input/apefight/testParams.params`). 
 7. An example file is included for running on an HPC with a SLURM scheduler in `input/apefight/apeFight.sh`.
 
-### Directory structure
+#### Directory structure
 
-The directory structure is shown below. New models using this framework should place their files in an `input/<project>` directory as shown for the Ape Fight example.
+The directory structure is shown below. New models using this framework should place their files in `input/<project>` as shown for the Ape Fight example.
 ```
 emd/src/main/java/org/mitre/emd/
 ├── EvolutionaryModelDiscovery.java
@@ -227,6 +245,8 @@ strategy_mining/src/main/java/org/mitre/strategy_mining
 └── StrategyMining.java
 ```
 
+### Model design with Mason
+
 
 # Public Release
 ©2021 The MITRE Corporation. 
@@ -237,6 +257,6 @@ Public Release Case Number 20-3366
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+`http://www.apache.org/licenses/LICENSE-2.0`
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

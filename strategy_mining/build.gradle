@@ -29,24 +29,20 @@ repositories {
     }
     maven {
         url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
-        credentials {
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-        }
     }
 
-    // Finally look outside
+    // Look at Maven Central
     maven {
         url = 'https://plugins.gradle.org/m2/'
-    }
-    // netlogo is special and has their own repository
-    maven {
-        url = 'https://dl.bintray.com/netlogo/NetLogo-JVM/'
     }
 
     // Look on Github for repositories
     maven { url 'https://jitpack.io' }
-    jcenter()
+
+    // Netlogo and all of it's dependencies are in ../lib
+    flatDir {
+        dirs '../lib'
+    }
 }
 
 dependencies {
@@ -55,11 +51,25 @@ dependencies {
 //    implementation 'com.github.eclab:mason:20'  // for Github
     implementation 'edu.gmu.cs:ecj:27'
     implementation 'org:netlogo:6.1.1'
+//    implementation files('../lib/netlogo-6.1.1.jar')
+//    implementation files('../lib/*.jar')
     implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'org.mitre:emd:1'
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm-commons
+    implementation group: 'org.ow2.asm', name: 'asm-commons', version: '9.1'
+    implementation group: 'org.ow2.asm', name: 'asm', version: '9.1'
+    implementation 'org.ow2.asm:asm-util:9.1'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+
+    // CSV dependency
+    implementation 'net.sf.supercsv:super-csv-java8:2.4.0'
+
+    // Logging Dependencies
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.1'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.1'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
@@ -68,7 +78,27 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClassName = 'org.mitre.strategy_mining.StrategyMining'
-    applicationDefaultJvmArgs = ["-Xmx8G"]  // This is a doubling of what Apefight uses (about 4GB), change this as necessary for other models
+
+    // Setting the heap size to 8GB is a doubling of what Apefight uses (about 4GB), change this as necessary for other models
+    // --add-opens java.base/java.lang.ref=ALL-UNNAMED is a fix for running on Windows
+    applicationDefaultJvmArgs = ["-Xmx8G", "--add-opens", "java.base/java.lang.ref=ALL-UNNAMED"]
+}
+
+test {
+    // All the tests are run by default. This is just here so they can be skipped if desired with "gradle build -x test"
+}
+
+tasks.named("distTar") {
+    duplicatesStrategy = 'exclude'
+}
+
+tasks.named("distZip") {
+    duplicatesStrategy = 'exclude'
+}
+
+run {
+     args = ["-f", "../input/apefight/experiment.apeFight.nlogo.params", "-op", "outputPath=../output/apefight.csv"]
+//	args = ["-f", "../input/apeFightMason/experiment.apeFight.mason.params", "-op", "outputPath=../output/apefight.csv"]
 }
 
 build.dependsOn gradle.includedBuild('emd').task(':compileEMD')

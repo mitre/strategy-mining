@@ -40,6 +40,11 @@ public class ApeFightProblem extends GeneralProblem {
         return val;
     }
 
+    /**
+     * Returns the commands used in the creation of the NetLogo workspace.
+     * @param state
+     * @return
+     */
     @Override
     public String[] setupCommands(EvolutionState state) {
         int popSize = state.parameters.getInt(new Parameter("pop.subpop.0.size"), null);
@@ -57,6 +62,12 @@ public class ApeFightProblem extends GeneralProblem {
         }
     }
 
+    /**
+     * Retrieves the fit data from the row in the input file specified. This is used to compare fitness against prior runs.
+     * @param inputFile
+     * @param rowNumberTarget
+     * @return
+     */
     public String getFitData(String inputFile, int rowNumberTarget)  {
         String row = getRow(inputFile, rowNumberTarget);
         return row.substring(row.indexOf("\"["));

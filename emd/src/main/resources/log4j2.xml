@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="org.mitre.strategy_mining">
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %5p [%t] (%F:%L) - %m%n"/>
+    </Console>
+    <TextAppender name="TextAppender">
+      <PatternLayout pattern="%5p - %m%n"/>
+    </TextAppender>
+    <RollingFile name="R" fileName="logs/strategy_mining.log" filePattern="logs/$${date:yyyy-MM}/strategy_mining-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c - %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingFile>
+    <RollingFile name="err" fileName="logs/strategy_mining_error.log" filePattern="logs/$${date:yyyy-MM}/strategy_mining_error-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>%d %p %c - %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="1"/>
+    </RollingFile>
+    <RollingFile name="T" fileName="logs/strategy_mining_daily.log"
+                 filePattern="logs/$${date:yyyy-MM}/strategy_mining_daily-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d %p %c - %m%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="100 MB" />
+      </Policies>
+    </RollingFile>
+  </Appenders>
+  <Loggers>	
+    <Root level="INFO">
+      <AppenderRef ref="STDOUT"/>
+      <AppenderRef ref="err" level="ERROR"/>
+      <AppenderRef ref="R" level="INFO"/>
+      <AppenderRef ref="T" level="INFO"/>
+      <AppenderRef ref="TextAppender" level="WARN"/>
+    </Root>
+  </Loggers>
+</Configuration>

@@ -3,7 +3,9 @@ ecj_savetofile/out/production/ecj
 MOEAFramework-2.13/out/production/MOEAFramework-2.13/mariah/objectives.csv
 MOEAFramework-2.13/out/production/MOEAFramework-2.13/mason_example
 .vscode/launch.json
-output
+
+# Ignore the top level output directory but not the output package
+/output/ 
 
 # Ignore Gradle project-specific cache directory
 .gradle
@@ -15,8 +17,34 @@ build
 out
 src/test/resources/rules
 src/main/java/org/mitre/strategy_mining/rules
-emd/src/main/java/org/mitre/emd/rules
+
+# Ignore the generated rules
+emd/src/main/java/org/mitre/emd/rules/*
+
+# Don't ignore the hand coded rules
+!emd/src/main/java/org/mitre/emd/rules/Factor.java
+!emd/src/main/java/org/mitre/emd/rules/MajorityFightingMason.java
+!emd/src/main/java/org/mitre/emd/rules/MajorityLinksFightingMason.java
+!emd/src/main/java/org/mitre/emd/rules/MinorityFightingMason.java
+!emd/src/main/java/org/mitre/emd/rules/MinorityLinksFightingMason.java
+!emd/src/main/java/org/mitre/emd/rules/RankInThresholdMason.java
+!emd/src/main/java/org/mitre/emd/rules/SizeInThresholdMason.java
+!emd/src/main/java/org/mitre/emd/rules/ZandComboMason.java
+!emd/src/main/java/org/mitre/emd/rules/ZorComboMason.java
+
 input/apefight/models/*.nlogo
 old
 .DS_Store
 emd/src/test/java/org/mitre/emd/rules
+emd/src/test/test_output
+input/findRadar/models
+strategy_mining/logs
+.classpath
+emd/src/test/test_output
+emd/bin
+strategy_mining/bin
+input/findRadar
+.project
+strategy_mining/.settings
+strategy_mining/lib/strategy_mining-1.0-SNAPSHOT
+emd/.settings

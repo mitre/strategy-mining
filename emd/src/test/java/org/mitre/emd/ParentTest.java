@@ -11,18 +11,21 @@ public class ParentTest {
     private String factorsPath = "";
     private String modelPath = "";
     private String outputPath = "";
+    private String newParams = "";
     private File factorsFile = null;
     private File paramsFile = null;
     private File modelFile = null;
+    private File newParamsFile = null;
     private Path pathBase = null;
 
     public void init() {
-        this.params = new String[] { "src/test/resources/testParams.params" };
-        this.paramsPath = params[0];
+        this.paramsPath = System.getProperty("params");
+        if(this.paramsPath == null){
+            this.paramsPath = "../input/apefight/experiment.apeFight.nlogo.params";
+        }
         this.paramsFile = new File(this.paramsPath);
-//        this.pathBase = Path.of(paramsFile.toPath().toAbsolutePath().getParent().getParent().getParent().getParent().toString(),"emd/src/test/java/org/mitre/emd");
-        Path topLevel = Paths.get("").toAbsolutePath();
-        this.pathBase = Paths.get(topLevel.toString(), "src/test/java/org/mitre/emd");
+
+        this.pathBase = Paths.get("../emd/src/main/java/org/mitre/emd");
         try {
             // open the original params file, and find the modelPath parameter
             // store the found parameter in appropriate variables
@@ -67,7 +70,7 @@ public class ParentTest {
         return this.paramsPath;
     }
 
-    public void setParamsBase(Path pathBase) {
+    public void setPathBase(Path pathBase) {
         this.pathBase = pathBase;
     }
 
@@ -99,6 +102,18 @@ public class ParentTest {
         return this.outputPath;
     }
 
+    public void setNewParams() {
+        Path paramsFileNameFullPath = Path.of(this.paramsPath).toAbsolutePath();
+        String[] splitName = paramsFileNameFullPath.getFileName().toString().split("\\.");
+        String newName = "experiment." + splitName[1] + "." + splitName[2] + "." + splitName[3];
+        this.newParams = paramsFileNameFullPath.getParent().toString() + File.separator + newName;
+        this.newParamsFile = new File(this.newParams);
+    }
+
+    public String getNewParams() {
+        return this.newParams;
+    }
+
     public void setFactorsFile(File factorsFile) {
         this.factorsFile = factorsFile;
     }
@@ -121,5 +136,9 @@ public class ParentTest {
 
     public File getModelFile() {
         return this.modelFile;
+    }
+
+    public File getNewParamsFile() {
+        return this.newParamsFile;
     }
 }

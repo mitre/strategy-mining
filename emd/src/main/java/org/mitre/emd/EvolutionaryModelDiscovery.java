@@ -1,10 +1,23 @@
 package org.mitre.emd;
 
+import com.google.gson.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.mitre.emd.utility.EmdConfiguration;
+import org.mitre.emd.utility.EmdConfigurationAdapter;
+import org.mitre.emd.utility.FactorsConfiguration;
+import org.mitre.emd.utility.MethodReplacer;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.*;
 import java.nio.file.*;
+
+//import static org.objectweb.asm.Opcodes.ASM7;
 
 /**
  * The EvolutionaryModelDiscovery class should only be called to run the main method.
@@ -21,7 +34,14 @@ import java.nio.file.*;
  * - all ECJ programs are run to minimize the objective value (metric)
  */
 public class EvolutionaryModelDiscovery {
+    public static final Logger logger = LogManager.getLogger(EvolutionaryModelDiscovery.class);
+
     EvolutionaryModelDiscovery(){}
+
+    /**
+     * Holds the model properties read in from file
+     */
+    Properties prop = new Properties();
     private String packageName = "org.mitre.emd";
     private String treeReturnType = "";
     private String factorsPath = "";
@@ -31,9 +51,12 @@ public class EvolutionaryModelDiscovery {
     private File factorsFile = null;    
     private File paramsFile = null;
     private File modelFile = null;
+    private Properties modelProperties = new Properties();
     private boolean distributed = false;
     private Path pathBase = null;
     private List<Map<String, String>> data = null;
+    private EmdConfiguration emdConfiguration;
+
     /**
      * This main method parses the factors.nls file argument into a Java class for each EMD function. It also generates the 
      * full params file with all of the method parameters and return types specified. This full params file has the passed
@@ -58,68 +81,125 @@ public class EvolutionaryModelDiscovery {
     }
 
     private void setParams() {
-        try {
+        try (InputStream input = new FileInputStream(this.paramsPath)) {
             this.paramsFile = new File(this.paramsPath);
             // TODO Should pathBase be relative to the project's top level directory or a user configurable path?
-            Path topLevel = Paths.get("").toAbsolutePath();
-            this.pathBase = Paths.get(topLevel.toString(), "src/main/java/org/mitre/emd");
-//          this.pathBase = Path.of(this.paramsFile.toPath().toAbsolutePath().getParent().getParent().getParent().toString(),"src/main/java/org/mitre/emd");
-            //open the original params file, and find the modelPath parameter
-            //store the found parameter in appropriate variables
-            Scanner scan = new Scanner(this.paramsFile);
+            Path topLevel = Paths.get("").toAbsolutePath().getParent();
+            this.pathBase = Paths.get(topLevel.toString() + File.separator + "emd", "src/main/java/org/mitre/emd");
 
-            while(scan.hasNextLine()) {
-                String line = scan.nextLine();
+            Properties prop = new Properties();
 
-                if(line.contains("modelPath")) {
-                    this.modelPath = line.split("=")[1].strip();
-                    this.modelFile = new File(this.modelPath).getCanonicalFile();
-                }
+            // load the input params file
+            prop.load(input);
 
-                if(line.contains("factorsPath")) {
-                    this.factorsPath = line.split("=")[1].strip();
-                    this.factorsFile = new File(this.factorsPath);
-                }
+            this.modelPath = prop.getProperty("modelPath");
+            this.modelFile = new File(this.modelPath).getCanonicalFile();
 
-                if(line.contains("runDistributed")) {
-                    this.distributed = Boolean.parseBoolean(line.split("=")[1].strip());
-                }
+            this.factorsPath = prop.getProperty("factorsPath");
+            this.factorsFile = new File(this.factorsPath);
 
-                if(line.contains("outputPath")) {
-                    this.outputPath = line.split("=")[1].strip();
-                }
-            }
-            scan.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            this.distributed = Boolean.parseBoolean(prop.getProperty("runDistributed"));
+
+            this.outputPath = prop.getProperty("outputFileDirectory") + prop.getProperty("outputFileName");
+
+        } catch (IOException ex) {
+            logger.error("Error loading params file.",ex);
         }
+
     }
 
     private void setTreeReturnType() {
-        try {
-            //open the model file (.nlogo) to find the type the tree must return at the top-level
-            Scanner scan = new Scanner(this.modelFile);
+        String modelExtension = this.modelFile.getName().split("\\.")[1];
+        // Check if it's a NetLogo file
+        if(modelExtension.equals("nls") || modelExtension.equals("nlogo")){
+            try {
+                //open the model file (.nlogo) to find the type the tree must return at the top-level
+                Scanner scan = new Scanner(this.modelFile);
 
-            while(scan.hasNextLine()) {
-                String line = scan.nextLine();
+                while(scan.hasNextLine()) {
+                    String line = scan.nextLine();
 
-                if(line.contains("@EvolveNextLine")) {
-                    Pattern pattern = Pattern.compile("(?:[@return\\-type=]{13})([\\w-]+)");
-                    Matcher matcher = pattern.matcher(line);
-                    matcher.find();
-                    this.treeReturnType = matcher.group(1);
+                    if(line.contains("@EvolveNextLine")) {
+                        Pattern pattern = Pattern.compile("(?:[@return\\-type=]{13})([\\w-]+)");
+                        Matcher matcher = pattern.matcher(line);
+                        matcher.find();
+                        this.treeReturnType = matcher.group(1);
+                    }
                 }
-            }    
 
-            scan.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } 
+                scan.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else if(modelExtension.equals("properties")) {
+
+            try (InputStream input = new FileInputStream(modelFile)) {
+                modelProperties.load(input);
+                this.treeReturnType = modelProperties.getProperty("returnType");
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        } else if(modelExtension.equals("json")) {  // TODO fill this in for MASON models
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .registerTypeAdapter(EmdConfiguration.class, new EmdConfigurationAdapter())
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // put it in Javascript variable format
+                    .create();
+            try {
+                emdConfiguration = gson.fromJson(new FileReader(this.modelFile.getAbsoluteFile()), EmdConfiguration.class);
+                for (FactorsConfiguration factor : emdConfiguration.getFactors()) {
+                    this.treeReturnType = factor.getReturnType();
+                    System.out.println(factor);
+                }
+            } catch (FileNotFoundException ex) {
+                System.err.println("Configuration file not found at: " + this.modelFile.getAbsoluteFile().toString() + ex.getMessage() + ex.getStackTrace());
+                return;
+            }
+        } else {
+            System.err.println("Sorry, we don't know how to handle this type of file: " + modelFile.getName() + " . Exiting...");
+            System.exit(-1);
+        }
+
     }
 
     private void writeRulesFiles() {
+        // Create factors files based on the EMD configuration file for MASON models
+        // TODO this is not quite working yet
+        if(emdConfiguration != null){
+            for(FactorsConfiguration factor: emdConfiguration.getFactors()){
+                String classToClone = "org.mitre.emd.Factor";  // This is the class you want to clone and put the method from the other class into.
+                String classToRead = factor.getClassName();  // This is the class we read a method from
+                String classToReadPackage = factor.getClassPackage();  // This is the package that the classToRead is in
+                classToRead = classToReadPackage + "." + classToRead;
+                String methodToRead = factor.getEvalMethod();  // This is the method we want to read in classToRead
+                String classToWrite = factor.getClassName() + "Factor";  // Name of the new class we're writing
+                try {
+                    ClassWriter cw = new ClassWriter(0);
+                    ClassReader cr = new ClassReader(classToClone);
+                    ClassVisitor cv = new ClassVisitor(7 << 16 | 0 << 8, cw){};
+
+                    ClassReader otherCr = new ClassReader(classToRead);
+                    ClassVisitor studentCv = new ClassVisitor(7 << 16 | 0 << 8, cv) {
+                    };
+                    MethodReplacer mr = new MethodReplacer(studentCv, methodToRead);
+                    otherCr.accept(mr, 0);
+
+                    cr.accept(cv, 0);
+
+                    Transformer transformer = new Transformer();
+                    byte[] bytes = cw.toByteArray();
+                    transformer.writeClass(bytes, classToWrite);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return;
+        }
+
+        // Create factors files for NetLogo models
         try {
             //this data object will store all of the information needed for each method in the factors file
             this.data = new ArrayList<>();
@@ -127,6 +207,12 @@ public class EvolutionaryModelDiscovery {
             Scanner scan = new Scanner(this.factorsFile);
             int count = 0; //the total number of methods we've seen
             boolean flag = false;
+            File rules = new File(this.pathBase + "/rules/");
+
+            // create rules directory if it doesn't exist
+            if (!rules.exists()) {
+                rules.mkdir();
+            }
 
             while(scan.hasNextLine()) {
                 String line = scan.nextLine();
@@ -174,15 +260,14 @@ public class EvolutionaryModelDiscovery {
                         myMap.put("className", className);
                         
                         //create and write new file
-                        File rules = new File(this.pathBase + "/rules/");
-                        if (!rules.exists()) {
-                            rules.mkdir();
-                        }
-
                         // TODO consider using Java 13/14 text block to make this more readable
                         String contents = "package "+this.packageName+".rules;\nimport ec.*;\nimport ec.gp.*;\npublic class "+className+" extends GPNode {\npublic String toString() {\nreturn \" "+(nParams == 0 ? "( ": "")+methodName+(nParams == 0 ? " )" : "")+" \";\n}\n@Override\npublic void eval(EvolutionState state, int thread, GPData input, ADFStack stack, GPIndividual individual, Problem problem) {\n}\npublic int expectedChildren() { return "+nParams+"; }\n}";
-                        // TODO need to force create <pathBase>/rules if it doesn't exist
-                        FileWriter fw = new FileWriter(new File(this.pathBase + "/rules/" + className + ".java"));
+                        File newFactorFile = new File(this.pathBase + "/rules/" + className + ".java");
+                        // Clear out any old factors files from prior runs before creating new ones.
+                        if(newFactorFile.exists()){
+                            newFactorFile.delete();
+                        }
+                        FileWriter fw = new FileWriter(newFactorFile);
                         fw.write(contents);
                         fw.flush();
                         fw.close();
@@ -194,6 +279,7 @@ public class EvolutionaryModelDiscovery {
                     flag = false;
                 }
             }
+            scan.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -201,6 +287,9 @@ public class EvolutionaryModelDiscovery {
         }
     }
 
+    /**
+     * Creates a new params file based on the given factors.
+     */
     private void writeNewParamsFile() {
         try {
             //new params file requires knowing all custom datatypes
@@ -215,12 +304,15 @@ public class EvolutionaryModelDiscovery {
                 }
             }
 
-            //write the new params file
-            String newName = this.paramsPath.substring(0, this.paramsPath.length()-7)+"."+this.modelFile.getName()+".params";
-            File newFile = new File(newName);
+            //write the new factors params file
+            Path paramsFileNameFullPath = Path.of(this.paramsPath).toAbsolutePath();
+            String[] splitName = paramsFileNameFullPath.getFileName().toString().split("\\.");
+            String newName = "factors." + splitName[1] + "." + splitName[2] + "." + splitName[3];
+
+            File newFile = new File(paramsFileNameFullPath.getParent().toString() + File.separator + newName);
             FileWriter fw = new FileWriter(newFile);
 
-            fw.write("parent.0 = "+this.paramsFile.getName()+"\n\n");
+            fw.write("parent.0 = parent.params\n");
             fw.write("gp.tc.size = 1\n");
             fw.write("gp.tc.0 = ec.gp.GPTreeConstraints\n");
             fw.write("gp.tc.0.name = tc0\n");
@@ -292,5 +384,21 @@ public class EvolutionaryModelDiscovery {
         sub = sub.strip();
         return sub.split(" ").length;
     }
+
+//    private class FactorDeserializer implements JsonDeserializer<Factors> {
+//        private Gson gson;
+//
+//        public FactorDeserializer(){
+//            this.gson = new Gson();
+//        }
+//        public Factors deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+//                throws JsonParseException {
+//            JsonObject factorObject = json.getAsJsonObject();
+////            return new Factors(json.getAsJsonPrimitive().getAsJsonArray());
+//            return gson.fromJson(factorObject,Factors.class);
+//        }
+//    }
     
 }
+
+

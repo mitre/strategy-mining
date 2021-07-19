@@ -6,8 +6,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+// import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,7 +32,11 @@ import org.nlogo.headless.HeadlessWorkspace;
  */
 public class GeneralProblem extends GPProblem {
     private static final long serialVersionUID = 1;
+    private List<String> factors = null;
+    // private Path topLevel = null;
+    // private Path pathBase = null;
     public String fileContents;
+    public String outputPath;
 
     /**
      * called once at the beginning of each generation
@@ -39,22 +48,35 @@ public class GeneralProblem extends GPProblem {
         super.setup(state, base);
 
         String path = state.parameters.getString(new Parameter("modelPath"), null);
-        String basePath = path.substring(0, path.lastIndexOf("/"));
-
         File f = new File(path).getAbsoluteFile();
         StringBuilder contents = new StringBuilder();
+
+        outputPath = state.parameters.getString(new Parameter("outputPath"), null);
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
+
             while (br.ready()) {
                 contents.append(br.readLine() + "\n");
             }
+
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         fileContents = contents.toString();
         // store model name from base into a state variable
-        
+        // topLevel = Paths.get(".").toAbsolutePath();
+        // pathBase = Paths.get(topLevel.getParent().toString(), "src/main/java/org/mitre/emd");
+
+        if (factors == null) {
+            // File ruleDirectory = new File(pathBase + "/rules/");
+            // File ruleDirectory = new File("../emd/src/main/java/org/mitre/emd/rules/");
+
+            setFactors(state);
+        }
+
+        createOutputFile(outputPath);
     }
 
     /**
@@ -75,16 +97,17 @@ public class GeneralProblem extends GPProblem {
         * find @EMD tag, replace next line with rules, run netlogo model, get back metric(s)
         */
         
-        int ticks = state.parameters.getInt(new Parameter("ticks"), null);
         String path = state.parameters.getString(new Parameter("modelPath"), null);
         String basePath = path.substring(0, path.lastIndexOf("/"));
 
         File file = new File(path);
         String fName = file.getName();
-        String newPath = basePath + File.separator +"models" + File.separator + fName.substring(0, fName.lastIndexOf("."))
+        String generatedModelPath = basePath + File.separator +"models";
+        String newPath = generatedModelPath + File.separator + fName.substring(0, fName.lastIndexOf("."))
                 + ThreadLocalRandom.current().nextLong() + fName.substring(fName.lastIndexOf("."));
         try {
             Scanner scan = new Scanner(fileContents);
+            Files.createDirectories(Path.of(generatedModelPath));
             FileWriter fw = new FileWriter(new File(newPath));
             String line = "";
             boolean flag = false;
@@ -111,42 +134,10 @@ public class GeneralProblem extends GPProblem {
             if(netlogo_extensions != null){
         System.setProperty("netlogo.extensions.dir", netlogo_extensions);
             }
+		System.out.println("Extension directory: " + netlogo_extensions);
         String outputPath = state.parameters.getString(new Parameter("outputPath"), null);
 
-        HeadlessWorkspace workspace = HeadlessWorkspace.newInstance();
-            
-        try {
-            workspace.open(newPath, true);
-            for (String command : setupCommands(state)) {
-                workspace.command(command);
-            }
-            workspace.command("repeat " + ticks + " [ go ]");
-            List<Object> metrics = new ArrayList<>();
-            for (String metric : metricNames()) {
-                metrics.add(workspace.report(metric));
-            }
-                
-            double realFitness = calculateFitness(metrics, state);
-            KozaFitness kfitness = ((KozaFitness) ind.fitness);
-            kfitness.setStandardizedFitness(state, realFitness);
-            ind.evaluated = true;
-
-            FileWriter scoresFile = new FileWriter(outputPath, true);
-            //write info to the output file
-            scoresFile.write(state.generation + "," + rules + "," + realFitness + ",\"" + metrics + "\"\n");
-            scoresFile.flush();
-            scoresFile.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            new File(newPath).delete();
-            try {
-                workspace.dispose();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.gc();
-        }
+        runCustomModels(state, ind, newPath, rules);
     }
 
     /**
@@ -194,5 +185,94 @@ public class GeneralProblem extends GPProblem {
         //the default code assumes the first (or only) metric listed contains
         //the fitness of that model
         return (Double) metrics.get(0);
+    }
+
+    private void setFactors(EvolutionState state) {
+        factors = new ArrayList<String>();
+        String curFactor = "";
+
+        for (int i = 0; curFactor != null; i++) {
+            curFactor = state.parameters.getString(new Parameter("gp.fs.0.func." + i), null);
+
+            if (curFactor != null) {
+                String[] splitFactor = curFactor.split("\\.");
+                String factorName = splitFactor[splitFactor.length - 1];
+                factors.add(factorName);
+            }
+        }
+    }
+
+    private void setFactors(File ruleDirectory) {
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File f, String name) {
+                return name.endsWith(".java");
+            }
+        };
+        String[] factorFiles = ruleDirectory.list(filter);
+
+        factors = new ArrayList<>(factorFiles.length);
+        for (int i = 0; i < factorFiles.length; i++) {
+            factors.add(factorFiles[i].split(".java")[0]);
+        }
+
+        factors.sort(Comparator.naturalOrder());
+    }
+
+    public void runCustomModels(EvolutionState state, Individual ind, String newPath, String rules) {
+        int ticks = state.parameters.getInt(new Parameter("ticks"), null);
+        HeadlessWorkspace workspace = HeadlessWorkspace.newInstance();
+            
+        try {
+            workspace.open(newPath, true);
+            for (String command : setupCommands(state)) {
+                workspace.command(command);
+            }
+            workspace.command("repeat " + ticks + " [ go ]");
+            List<Object> metrics = new ArrayList<>();
+            for (String metric : metricNames()) {
+                metrics.add(workspace.report(metric));
+            }
+                
+            double realFitness = calculateFitness(metrics, state);
+            KozaFitness kfitness = ((KozaFitness) ind.fitness);
+            kfitness.setStandardizedFitness(state, realFitness);
+            ind.evaluated = true;
+
+            OutputWriter outputWriter = new OutputWriter(factors);
+            //write info to the output file
+            outputWriter.writeFile(outputPath, state.generation, rules, realFitness, metrics);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            new File(newPath).delete();
+            try {
+                workspace.dispose();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.gc();
+        }
+    }
+
+    public void createOutputFile(String outputPath) {
+        try {
+            File outputFile = new File(outputPath);
+
+            if (!outputFile.getParentFile().exists()) {
+                outputFile.getParentFile().mkdirs();
+            }
+
+            FileWriter fw = new FileWriter(outputFile, false);
+            fw.write("Gen,Rule,Fitness,Fitdata," + String.join(",", factors) + "\n");
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getFactors() {
+        return factors;
     }
 }

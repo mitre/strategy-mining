@@ -1,0 +1,32 @@
+parent.0 = factors.apeFight.mason.params
+
+# False means don't stop if I find a perfect individual
+quit-on-run-complete = false 
+
+eval.problem = org.mitre.emd.ApeFightMasonProblem
+
+# Data class
+eval.problem.data = org.mitre.emd.models.ape_fight.SimData
+
+generations = 3
+gp.tree.print-style = c
+pop.subpop.0.size = 5
+breedthreads = 1
+evalthreads = 3
+# Must have a seed for each evalthread
+seed.0 = -1775080042   
+seed.1 = -1775080041 
+seed.2 = -1775080040 
+
+replication = 1
+ticks = 1200
+runDistributed = false
+
+gp.koza.half.min-depth = 3
+gp.koza.half.max-depth = 5
+
+# For MASON models the modelPath is the factorsPath
+modelPath = ../input/apeFightMason/ape_fight_factors.json
+factorsPath = ../input/apeFightMason/ape_fight_factors.json
+outputFileName = output1.csv
+outputFileDirectory = ../output/
