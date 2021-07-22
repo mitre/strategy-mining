@@ -26,8 +26,6 @@ public class ApeFightMasonProblem extends GPProblem {
     int ticks;
     OutputWriter outputWriter = new OutputWriter();
 
-
-
     @Override
     public void evaluate(EvolutionState evolutionState, Individual ind, int subpopulation, int threadnum) {
 
@@ -54,7 +52,7 @@ public class ApeFightMasonProblem extends GPProblem {
 
 //        ((GPIndividual)ind).printTrees(evolutionState, 0);
         ArrayList<Integer> fitData = simstate.getFightSizeList();
-        ResultsBean results = new ResultsBean(evolutionState.generation, "parsedRule", rules, fitness, fitData){};
+        ResultsBean results = new ResultsBean(evolutionState.generation, rules, fitness, fitData){};
         outputWriter.recordResults(results);
     }
 

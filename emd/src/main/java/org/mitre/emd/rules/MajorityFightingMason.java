@@ -11,9 +11,6 @@ import org.mitre.emd.models.ape_fight.ApeFight;
 import org.mitre.emd.models.ape_fight.SimData;
 
 public class MajorityFightingMason extends GPNode {
-    public MajorityFightingMason() {
-    }
-
     public String toString() {
         return " ( majorityFighting ) ";
     }
@@ -23,11 +20,7 @@ public class MajorityFightingMason extends GPNode {
 
         ApeFight sim = ((ApeFightMasonProblem)problem).simstate;
 
-        if ((double) sim.countFighting() / sim.getNumPrimates() > 0.5) {
-            simData.result = true;
-        } else {
-            simData.result = false;
-        }
+        simData.result = sim.majorityFighting();
     }
 
     public int expectedChildren() {

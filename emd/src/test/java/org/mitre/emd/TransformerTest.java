@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.mitre.emd.rules.Factor;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.*;
-//import org.objectweb.asm.commons.RemappingClassAdapter;
-//import org.objectweb.asm.commons.RemappingMethodAdapter;
 import org.objectweb.asm.tree.*;
 
 import java.io.IOException;
@@ -261,12 +259,13 @@ public class TransformerTest {
         System.out.println(factor.toString());
     }
 
-//    @Test
+    @Test
     public void renameAndReplaceClass() throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
         String classToRename = "org.mitre.emd.rules.Factor";  // This is the class you want to rename
         String classToWrite = "StudentFactor";  // Name of the new class we're writing
-        String classToRead = "org.mitre.emd.models.students.StudentFoo";  // This is the class we read a method from
-        String methodToRead = "method2";  // This is the method we want to read in classToRead
+//        String classToRead = "org.mitre.emd.models.students.StudentFoo";  // This is the class we read a method from
+        String classToRead = "org.mitre.emd.models.ape_fight.ApeFight";  // This is the class we read a method from
+        String methodToRead = "sizeInThreshold";  // This is the method we want to read in classToRead
 
         String renameSlashName = classToRename.replace('.', '/');
         String readSlashName = classToRead.replace('.', '/');
@@ -527,7 +526,7 @@ public class TransformerTest {
             method.setAccessible(true);
             try {
                 Object[] args =
-                        new Object[] { "FactorMinus", b, new Integer(0), new Integer(b.length)};
+                        new Object[] { "FactorMinus", b, 0, b.length};
                 clazz = (Class) method.invoke(loader, args);
             } finally {
                 method.setAccessible(false);
@@ -626,7 +625,7 @@ public class TransformerTest {
             method.setAccessible(true);
             try {
                 Object[] args =
-                        new Object[] { className, b, new Integer(0), new Integer(b.length)};
+                        new Object[] { className, b, 0, b.length};
                 clazz = (Class) method.invoke(loader, args);
             } finally {
                 method.setAccessible(false);

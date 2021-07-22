@@ -271,4 +271,61 @@ public class ApeFight extends SimState {
     public void setFightSizeList(ArrayList<Integer> fightSizeList) {
         this.fightSizeList = fightSizeList;
     }
+
+    public boolean majorityFighting() {
+        if ((double) this.countFighting() / this.getNumPrimates() > 0.5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean minorityFighting(){
+        if ((double) this.countFighting() / this.getNumPrimates() <= 0.5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean sizeInThreshold() {
+        if (this.countFighting() > 0) {
+            if (this.meanFightingSize() - this.currentPrimate.mySize < this.currentPrimate.mySizeThold) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    public boolean rankInThreshold(){
+        if (this.countFighting() > 0) {
+            if (this.meanFightingRank() - currentPrimate.myRank < currentPrimate.myHierThold) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+
+    public boolean majorityLinksFighting(){
+        if (this.proportionLinksFighting(currentPrimate) > 0.5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean minorityLinksFighting() {
+        if (this.proportionLinksFighting(currentPrimate) <= 0.5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
