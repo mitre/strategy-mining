@@ -114,6 +114,7 @@ task factorImportance(type: JavaExec) {
 test {
     // All the tests are run by default. This is just here so they can be skipped if desired with "gradle build -x test"
     systemProperties = System.properties
+	jvmArgs = ["--add-opens", "java.base/java.lang.ref=ALL-UNNAMED"]
 }
 
 
