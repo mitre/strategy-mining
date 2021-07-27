@@ -9,3 +9,4 @@
 
 rootProject.name = 'strategy_mining'
 includeBuild '../emd'
+includeBuild '../../nms'
