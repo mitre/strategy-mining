@@ -42,10 +42,15 @@ repositories {
         url = 'https://simulation.tudelft.nl/maven/'
     }
 
-    // Netlogo and all of it's dependencies are in ../lib
-    flatDir {
-        dirs '../lib'
+    maven {
+        url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
+        // https://cloudsmith.io/orgs/netlogo/
     }
+
+    // Netlogo and all of it's dependencies are in ../lib
+//    flatDir {
+//        dirs '../lib'
+//    }
 }
 
 dependencies {
