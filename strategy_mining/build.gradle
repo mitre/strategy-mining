@@ -17,7 +17,7 @@ applicationName = 'strategy_mining'  // the name that's used for the build/distr
 
 repositories {
     // TODO this is MITRE specific but useful for referencing Mason and ECJ, figure out how to remove
-    // Then look in Artifactory
+    // Look in local Artifactory
     maven {
         url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
     }
@@ -39,15 +39,11 @@ repositories {
     // Look on Github for repositories
     maven { url 'https://jitpack.io' }
 
+    // For NetLogo
     maven {
         url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
-        // https://cloudsmith.io/orgs/netlogo/
     }
 
-    // Netlogo and all of it's dependencies are in ../lib
-//    flatDir {
-//        dirs '../lib'
-//    }
 }
 
 dependencies {
@@ -56,8 +52,6 @@ dependencies {
 //    implementation 'com.github.eclab:mason:20'  // for Github
     implementation 'edu.gmu.cs:ecj:27'
     implementation 'org:netlogo:6.1.1'
-//    implementation files('../lib/netlogo-6.1.1.jar')
-//    implementation files('../lib/*.jar')
     implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
@@ -85,7 +79,7 @@ application {
     mainClassName = 'org.mitre.strategy_mining.StrategyMining'
 
     // Setting the heap size to 8GB is a doubling of what Apefight uses (about 4GB), change this as necessary for other models
-    // --add-opens java.base/java.lang.ref=ALL-UNNAMED is a fix for running on Windows
+    // --add-opens java.base/java.lang.ref=ALL-UNNAMED is a fix for running with Java 16+
     applicationDefaultJvmArgs = ["-Xmx8G", "--add-opens", "java.base/java.lang.ref=ALL-UNNAMED"]
 }
 

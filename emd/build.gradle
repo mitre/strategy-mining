@@ -15,7 +15,7 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     // TODO this is MITRE specific but useful for referencing Mason and ECJ, figure out how to remove
-    // Then look in Artifactory
+    // Look in local Artifactory
     maven {
         url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
     }
@@ -42,26 +42,19 @@ repositories {
         url = 'https://simulation.tudelft.nl/maven/'
     }
 
+    // For NetLogo
     maven {
         url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
-        // https://cloudsmith.io/orgs/netlogo/
     }
-
-    // Netlogo and all of it's dependencies are in ../lib
-//    flatDir {
-//        dirs '../lib'
-//    }
 }
 
 dependencies {
     // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+    implementation 'org.mitre:nms:1.0-SNAPSHOT'
 //    implementation 'com.github.eclab:mason:20'  // for Github
     implementation 'edu.gmu.cs:ecj:27'
     implementation 'org.nlogo:netlogo:6.1.1'
-//    implementation files('../lib/netlogo-6.1.1.jar')
-//    implementation files('../lib/*.jar')
-//    implementation group: 'org.nlogo', name: 'netlogo', version: '6.1.1'
     implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
@@ -89,8 +82,6 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
-//    testImplementation group: 'org.ow2.asm', name: 'asm', version: '9.1'
-//    testImplementation 'org.ow2.asm:asm-util:9.1'
 }
 
 /**

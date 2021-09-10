@@ -1,0 +1,98 @@
+parent.0 = parent.params
+
+# The gp parameters here are how ECJ sets up a GP problem
+
+# gp.tc - GPTreeConstraints - with one tree we need one GPTreeConstraints
+gp.tc.size = 1
+gp.tc.0 = ec.gp.GPTreeConstraints
+gp.tc.0.name = tc0
+
+# Define the GPType of the tree as a whole
+gp.tc.0.returns = top
+
+# gp.type - GPType - single atomic type 
+gp.type.a.size = 1
+gp.type.a.0.name = top
+
+# gp.fs - GPFunctionSet - GPFunctionSet is held by the GPTreeConstraints to construct trees
+gp.fs.size = 1
+gp.fs.0 = ec.gp.GPFunctionSet
+gp.fs.0.name = fs0
+gp.fs.0.size = 8
+
+# Assign function set to tree constraints
+gp.tc.0.fset = fs0
+
+# Number of GPNodeConstraints
+gp.nc.size = 8
+
+# Set GPNodeConstraints for nodes with 2 children
+gp.nc.0 = ec.gp.GPNodeConstraints
+gp.nc.0.name = nc0
+gp.nc.0.returns = top
+gp.nc.0.size = 2
+gp.nc.0.child.0 = top
+gp.nc.0.child.1 = top
+gp.fs.0.func.0 = org.mitre.nms.evolution.rules.Add
+gp.fs.0.func.0.nc = nc0
+gp.nc.1 = ec.gp.GPNodeConstraints
+gp.nc.1.name = nc1
+gp.nc.1.returns = top
+gp.nc.1.size = 2
+gp.nc.1.child.0 = top
+gp.nc.1.child.1 = top
+gp.fs.0.func.1 = org.mitre.nms.evolution.rules.Subtract
+gp.fs.0.func.1.nc = nc1
+gp.nc.2 = ec.gp.GPNodeConstraints
+gp.nc.2.name = nc2
+gp.nc.2.returns = top
+gp.nc.2.size = 2
+gp.nc.2.child.0 = top
+gp.nc.2.child.1 = top
+gp.fs.0.func.2 = org.mitre.nms.evolution.rules.Multiply
+gp.fs.0.func.2.nc = nc2
+gp.nc.3 = ec.gp.GPNodeConstraints
+gp.nc.3.name = nc3
+gp.nc.3.returns = top
+gp.nc.3.size = 2
+gp.nc.3.child.0 = top
+gp.nc.3.child.1 = top
+gp.fs.0.func.3 = org.mitre.nms.evolution.rules.Divide
+gp.fs.0.func.3.nc = nc3
+gp.nc.6 = ec.gp.GPNodeConstraints
+gp.nc.6.name = nc6
+gp.nc.6.returns = top
+gp.nc.6.size = 2
+gp.nc.6.child.0 = top
+gp.nc.6.child.1 = top
+gp.fs.0.func.6 = org.mitre.nms.evolution.rules.And
+gp.fs.0.func.6.nc = nc6
+gp.nc.7 = ec.gp.GPNodeConstraints
+gp.nc.7.name = nc7
+gp.nc.7.returns = top
+gp.nc.7.size = 2
+gp.nc.7.child.0 = top
+gp.nc.7.child.1 = top
+gp.fs.0.func.7 = org.mitre.nms.evolution.rules.Or
+gp.fs.0.func.7.nc = nc7
+
+
+# Set GPNodeConstraints for nodes with 0 children
+gp.nc.4 = ec.gp.GPNodeConstraints
+gp.nc.4.name = nc4
+gp.nc.4.returns = top
+gp.nc.4.size = 0
+gp.fs.0.func.4 = org.mitre.nms.evolution.rules.CurrentHoldings
+gp.fs.0.func.4.nc = nc4
+gp.nc.5 = ec.gp.GPNodeConstraints
+gp.nc.5.name = nc5
+gp.nc.5.returns = top
+gp.nc.5.size = 0
+gp.fs.0.func.5 = org.mitre.nms.evolution.rules.Returns
+gp.fs.0.func.5.nc = nc5
+gp.nc.6 = ec.gp.GPNodeConstraints
+gp.nc.6.name = nc6
+gp.nc.6.returns = top
+gp.nc.6.size = 0
+gp.fs.0.func.6 = org.mitre.nms.evolution.rules.EMA
+gp.fs.0.func.6.nc = nc6

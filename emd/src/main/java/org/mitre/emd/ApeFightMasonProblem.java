@@ -69,6 +69,8 @@ public class ApeFightMasonProblem extends GPProblem {
             simstate = new ApeFight(ticks,1,"");  // Seed doesn't matter here
         }
         simstate.random = state.random[threadnum];		// this is the real generator we'll use
+
+        System.out.println("Thread: " + threadnum + " size " + state.random.length);
     }
 
 
