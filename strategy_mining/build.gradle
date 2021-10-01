@@ -11,25 +11,25 @@ java {
 }
 
 group = 'org.mitre'
-description = 'strategy_mining'
+description = 'strategy-mining'
 version = '1.0-SNAPSHOT'
-applicationName = 'strategy_mining'  // the name that's used for the build/distribution. This does not include the version number.
+applicationName = 'strategy-mining'  // the name that's used for the build/distribution. This does not include the version number.
 
 repositories {
     // TODO this is MITRE specific but useful for referencing Mason and ECJ, figure out how to remove
     // Look in local Artifactory
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
-    }
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-release'
-    }
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-snapshot'
-    }
-    maven {
-        url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
-    }
+//    maven {
+//        url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
+//    }
+//    maven {
+//        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-release'
+//    }
+//    maven {
+//        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-snapshot'
+//    }
+//    maven {
+//        url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
+//    }
 
     // Look at Maven Central
     maven {
@@ -42,17 +42,23 @@ repositories {
     // For NetLogo
     maven {
         url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
+//        content {includeModule('org','netlogo')}  // TODO test that this works
+    }
+
+    // For ECJ dependencies
+    flatDir {
+        dirs '../lib/'
     }
 
 }
 
 dependencies {
     implementation 'com.google.guava:guava:29.0-jre'
-    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
-//    implementation 'com.github.eclab:mason:20'  // for Github
-    implementation 'edu.gmu.cs:ecj:27'
-    implementation 'org:netlogo:6.1.1'
-    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
+//    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
+//    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
+    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
+//    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
     implementation 'commons-cli:commons-cli:1.4'
@@ -60,7 +66,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.ow2.asm/asm-commons
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '9.1'
     implementation group: 'org.ow2.asm', name: 'asm', version: '9.1'
-    implementation 'org.ow2.asm:asm-util:9.1'
+    implementation group: 'org.ow2.asm', name: 'asm-util', version:'9.1'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 
     // CSV dependency

@@ -4,8 +4,6 @@ import ec.EvolutionState;
 import ec.Evolve;
 import ec.util.*;
 
-//import org.apache.log4j.LogManager;
-//import org.apache.log4j.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -15,7 +13,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mitre.emd.EvolutionaryModelDiscovery;
 import org.mitre.emd.output.OutputWriter;
 import org.mitre.emd.output.beans.ResultsBean;
 
@@ -24,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -167,7 +163,11 @@ public class StrategyMining {
 
         child.addParent(dbase);
         Output out = Evolve.buildOutput();
-        EvolutionState evaluatedState = Evolve.initialize(child, 0, out); 
+        EvolutionState evaluatedState = Evolve.initialize(child, 0, out);
+
+        // DEBUG
+//        System.out.println(System.getProperty("java.class.path").replace(':', '\n'));
+
         evaluatedState.run(EvolutionState.C_STARTED_FRESH);
 
         logger.info("Run time: " + (System.currentTimeMillis() - startTime)/Math.pow(10,3) + "s");

@@ -41,7 +41,7 @@ The following are the steps needed to to build and run a model.
     - (Advanced usage) The parameters file used in the build can be set in `emd/build.gradle` under the `runEMD` task or by passing an additional argument to build like so:
 
     ```bash
-    gradle build -PparamsFile="../input/apefight/experiment.apeFight.nlogo.params"
+    gradle build -Dparams="../input/apefight/experiment.apeFight.nlogo.params"
     ```
 
     - The argument `-PparamsFile="..."` tells the build where to find the params file for the model you're building. The params file path can be either fully qualified or relative to the `emd` directory as shown here.
@@ -56,7 +56,6 @@ From a command line interface, navigate to the `strategy-mining/strategy_mining/
 
 ```bash
 gradle run
-
 ```
 
 This will run the model with the default parameters file set in the run task in `emd/build.gradle`. As an alternative you can change the parameters file that's used by passing it in as an argument on the command line as follows:

@@ -259,7 +259,7 @@ public class TransformerTest {
         System.out.println(factor.toString());
     }
 
-    @Test
+//    @Test
     public void renameAndReplaceClass() throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException {
         String classToRename = "org.mitre.emd.rules.Factor";  // This is the class you want to rename
         String classToWrite = "StudentFactor";  // Name of the new class we're writing

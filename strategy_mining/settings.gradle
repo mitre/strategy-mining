@@ -7,6 +7,6 @@
  * in the user manual at https://docs.gradle.org/6.5.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'strategy_mining'
+rootProject.name = 'strategy-mining'
 includeBuild '../emd'
 includeBuild '../../nms'

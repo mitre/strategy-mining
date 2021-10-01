@@ -16,18 +16,18 @@ version = '1.0-SNAPSHOT'
 repositories {
     // TODO this is MITRE specific but useful for referencing Mason and ECJ, figure out how to remove
     // Look in local Artifactory
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
-    }
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-release'
-    }
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-snapshot'
-    }
-    maven {
-        url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
-    }
+//    maven {
+//        url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
+//    }
+//    maven {
+//        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-release'
+//    }
+//    maven {
+//        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-snapshot'
+//    }
+//    maven {
+//        url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
+//    }
 
     // Finally look outside
     maven {
@@ -40,22 +40,43 @@ repositories {
     // For Java3D
     maven {
         url = 'https://simulation.tudelft.nl/maven/'
+        content {includeGroup('java3d')}
     }
+
+    // For non-headless Netlogo it depends on org.jogamp.gluegen:gluegen-rt >= 2.4.0 and org.jogamp.jogl:jogl-all >=2.4.0 which are here
+   maven {
+       url = 'https://maven.jzy3d.org/releases/'
+       content {
+           includeGroup('org.jogamp.gluegen')
+           includeGroup('org.jogamp.jogl')
+       }
+   }
 
     // For NetLogo
     maven {
         url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
+        // You can see which versions are online here: https://cloudsmith.io/~netlogo/repos/netlogo/packages/
+//        content {includeModule('org.nlogo','netlogo')}  // TODO test that this works
+    }
+
+    // For ECJ dependencies
+    flatDir {
+        dirs '../lib/'
     }
 }
 
 dependencies {
-    // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
     implementation 'org.mitre:nms:1.0-SNAPSHOT'
-//    implementation 'com.github.eclab:mason:20'  // for Github
-    implementation 'edu.gmu.cs:ecj:27'
-    implementation 'org.nlogo:netlogo:6.1.1'
-    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
+
+    // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
+//    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
+//    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
+    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
+//    implementation 'org.nlogo:netlogo:6.1.1'
+    implementation 'org.nlogo:netlogoheadless:6.2.0-d27b502'  // This version is just for headless Netlogo and includes dependencies
+//    implementation 'org.nlogo:netlogo:6.2.0-d27b502'  // Non-headless Netlogo. Includes dependencies but the jogamp ones don't match whats on the https://maven.jzy3d.org/releases/ repository
+//    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
 
@@ -78,7 +99,6 @@ dependencies {
 //    implementation 'java3d:j3d-core-utils:1.5.1'
 //    implementation 'java3d:j3d-core:1.5.1'
 //    implementation 'java3d:vecmath:1.5.1'
-
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'

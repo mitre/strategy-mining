@@ -20,7 +20,6 @@ seed.2 = -1775080040
 
 replication = 1
 ticks = 1200
-runDistributed = false
 
 gp.koza.half.min-depth = 3
 gp.koza.half.max-depth = 5
@@ -37,3 +36,6 @@ mu = 0.1745805
 alpha = 0.3197897
 delta = 0.172234
 designPoint = test
+
+# Distributed run parameters
+runDistributed = false
