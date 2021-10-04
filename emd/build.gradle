@@ -69,10 +69,10 @@ dependencies {
     implementation 'org.mitre:nms:1.0-SNAPSHOT'
 
     // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
-//    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
-    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
-//    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
-    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
+    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+//    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
+    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
+//    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
 //    implementation 'org.nlogo:netlogo:6.1.1'
     implementation 'org.nlogo:netlogoheadless:6.2.0-d27b502'  // This version is just for headless Netlogo and includes dependencies
 //    implementation 'org.nlogo:netlogo:6.2.0-d27b502'  // Non-headless Netlogo. Includes dependencies but the jogamp ones don't match whats on the https://maven.jzy3d.org/releases/ repository

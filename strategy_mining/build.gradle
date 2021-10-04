@@ -54,10 +54,10 @@ repositories {
 
 dependencies {
     implementation 'com.google.guava:guava:29.0-jre'
-//    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
-    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
-//    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
-    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
+    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+//    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
+    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
+//    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
 //    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
@@ -102,7 +102,8 @@ tasks.named("distZip") {
 }
 
 run {
-     args = ["-f", "../input/apefight/experiment.apeFight.nlogo.params", "-op", "outputPath=../output/apefight.csv"]
+     args = ["-f", "../input/nms/experiment.nms.mason.params", "-op", "outputPath=../output/NMS.csv"]
+     // args = ["-f", "../input/apefight/experiment.apeFight.nlogo.params", "-op", "outputPath=../output/apefight.csv"]
 //	args = ["-f", "../input/apeFightMason/experiment.apeFight.mason.params", "-op", "outputPath=../output/apefight.csv"]
 }
 
