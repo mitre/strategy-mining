@@ -22,7 +22,7 @@ public class OutputWriter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //TODO get this from the input parameters file
-    public static String resultsLogFullPath = Paths.get("../output/output.csv").toAbsolutePath().toString();
+    public String resultsLogFullPath = Paths.get("../output/output.csv").toAbsolutePath().toString();
 
     public static boolean writeHeader = true;
 
@@ -37,9 +37,9 @@ public class OutputWriter {
      * @param processors
      * @param outputDir
      */
-    public static synchronized void initOutput(String fileName, String[] fieldMapping, String[] header, CellProcessor[] processors, File outputDir){
+    public void initOutput(String fileName, String[] fieldMapping, String[] header, CellProcessor[] processors, File outputDir){
         try {
-            OutputWriter.resultsLogFullPath = Paths.get(outputDir.toString(),fileName).toAbsolutePath().toString();
+            resultsLogFullPath = Paths.get(outputDir.toString(),fileName).toAbsolutePath().toString();
             File file = new File(outputDir, fileName);
             LOGGER.info("Writing " + fileName + " log to: " + file);
             if(file.exists() && writeHeader == true){

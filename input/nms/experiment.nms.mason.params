@@ -30,7 +30,7 @@ gp.koza.half.max-depth = 5
 outputFileName = outputNMS.csv
 outputFileDirectory = ../output/
 
-configFile = ../../nms/config/E0_v0.json
+configFile = ../../nms/config/E1_v0.json
 seed = 12345
 mu = 0.1745805
 alpha = 0.3197897

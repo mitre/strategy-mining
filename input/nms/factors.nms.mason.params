@@ -21,7 +21,7 @@ gp.type.a.2.name = top
 gp.fs.size = 1
 gp.fs.0 = ec.gp.GPFunctionSet
 gp.fs.0.name = fs0
-gp.fs.0.size = 15
+gp.fs.0.size = 16
 
 # Assign function set to tree constraints
 gp.tc.0.fset = fs0
@@ -128,6 +128,8 @@ gp.fs.0.func.13 = org.mitre.nms.evolution.rules.True
 gp.fs.0.func.13.nc = nc5
 gp.fs.0.func.14 = org.mitre.nms.evolution.rules.False
 gp.fs.0.func.14.nc = nc5
+gp.fs.0.func.15 = org.mitre.nms.evolution.rules.CurrentPrice
+gp.fs.0.func.15.nc = nc0
 
 # Top level GPNodeConstraints
 gp.fs.0.func.12 = org.mitre.nms.evolution.rules.Decision
