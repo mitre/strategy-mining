@@ -197,7 +197,8 @@ public class StrategyMining {
                 outputFileName = "output.csv";
             }
             File outputDirectory = Path.of(outputDirectoryString).toAbsolutePath().toFile();
-            OutputWriter.initOutput(outputFileName, ResultsBean.fieldMapping,ResultsBean.header,ResultsBean.processors,outputDirectory);
+            OutputWriter outputWriter = new OutputWriter();
+            outputWriter.initOutput(outputFileName, ResultsBean.fieldMapping,ResultsBean.header,ResultsBean.processors,outputDirectory);
         } catch (IOException ex) {
             System.err.println("Error loading params file.");
 //            logger.error("Error loading params file.",ex);
