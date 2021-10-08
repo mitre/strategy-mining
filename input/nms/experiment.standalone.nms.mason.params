@@ -8,21 +8,21 @@ eval.problem = org.mitre.nms.evolution.NmsProblem
 # Data class
 eval.problem.data = org.mitre.nms.evolution.SimData
 
-generations = 5
+generations = 3
 gp.tree.print-style = c
-pop.subpop.0.size = 3
-#breedthreads = 1
-evalthreads = auto
+pop.subpop.0.size = 5
+breedthreads = 1
+evalthreads = 1
 # Must have a seed for each evalthread
-#seed.0 = -1775080042   
-#seed.1 = -1775080041 
-#seed.2 = -1775080040 
+seed.0 = -1775080042   
+seed.1 = -1775080041 
+seed.2 = -1775080040 
 
 #replication = 1
 #ticks = 1200
 
 gp.koza.half.min-depth = 3
-gp.koza.half.max-depth = 4
+gp.koza.half.max-depth = 5
 
 # For MASON models the modelPath is the factorsPath
 # modelPath = ../input/apeFightMason/ape_fight_factors.json
@@ -38,7 +38,4 @@ delta = 0.172234
 designPoint = test
 
 # Distributed run parameters
-runDistributed = true
-eval.masterproblem = ec.eval.MasterProblem
-eval.master.port = 3000
-eval.masterproblem.max-jobs-per-slave = 1
+runDistributed = false
