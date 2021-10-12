@@ -87,9 +87,8 @@ tasks.named("distZip") {
 }
 
 run {
-     args = ["-f", "../input/nms/experiment.nms.mason.params", "-op", "outputPath=../output/NMS.csv"]
      // args = ["-f", "../input/apefight/experiment.apeFight.nlogo.params", "-op", "outputPath=../output/apefight.csv"]
-//	args = ["-f", "../input/apeFightMason/experiment.apeFight.mason.params", "-op", "outputPath=../output/apefight.csv"]
+    args = ["-f", "../input/apeFightMason/experiment.apeFight.mason.params", "-op", "outputPath=../output/apefight.csv"]
 }
 
 build.dependsOn gradle.includedBuild('emd').task(':compileEMD')

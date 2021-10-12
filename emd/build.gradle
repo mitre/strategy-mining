@@ -51,8 +51,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.mitre:nms:1.0-SNAPSHOT'
-
     // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation 'edu.gmu.cs:mason:20'  // for Maven internally
 //    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
