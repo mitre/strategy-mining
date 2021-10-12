@@ -19,12 +19,8 @@ public void eval(EvolutionState state, int thread, GPData input, ADFStack stack,
     SimData simData = (SimData) input;
 
     ApeFight sim = ((ApeFightMasonProblem)problem).simstate;
-    simData.result = sim.currentPrimate.majorityFighting(sim);
-//    if (sim.proportionLinksFighting(sim.currentPrimate) > 0.5) {
-//        simData.result = true;
-//    } else {
-//        simData.result = false;
-//    }
+
+    simData.result = sim.majorityLinksFighting();
 }
 public int expectedChildren() { return 0; }
 }

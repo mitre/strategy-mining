@@ -41,7 +41,7 @@ The following are the steps needed to to build and run a model.
     - (Advanced usage) The parameters file used in the build can be set in `emd/build.gradle` under the `runEMD` task or by passing an additional argument to build like so:
 
     ```bash
-    gradle build -PparamsFile="../input/apefight/experiment.apeFight.nlogo.params"
+    gradle build -Dparams="../input/apefight/experiment.apeFight.nlogo.params"
     ```
 
     - The argument `-PparamsFile="..."` tells the build where to find the params file for the model you're building. The params file path can be either fully qualified or relative to the `emd` directory as shown here.
@@ -56,7 +56,6 @@ From a command line interface, navigate to the `strategy-mining/strategy_mining/
 
 ```bash
 gradle run
-
 ```
 
 This will run the model with the default parameters file set in the run task in `emd/build.gradle`. As an alternative you can change the parameters file that's used by passing it in as an argument on the command line as follows:
@@ -109,14 +108,14 @@ Building the project creates an application bundle in `strategy_mining/build/dis
 2. Navigate to that location
 3. Run with the desired program arguments (similar to [running with Gradle](#Run-with-Gradle))
 ```
-./strategy_mining-1.0-SNAPSHOT/bin/strategy_mining -file <path_to>/strategy-mining/input/apefight/experiment.apeFight.nlogo.params
+./strategy_mining-1.0-SNAPSHOT/bin/strategy_mining -f <path_to>/strategy-mining/input/apefight/experiment.apeFight.nlogo.params
 ```
 
 ### Distributed run on an HPC cluster with Slurm scheduler
 
 Specific instructions for using Strategy Mining on an HPC cluster with the Slurm schedluer are provided here. If those words sound like gibberish and you're only running on your local machine then you can safely ignore this section.
 
-1. See `input/apefight/apefight_distributed.sh` for an example Slurm script.
+1. See `input/apefight/apeFight_distributed.sh` for an example Slurm script.
     - This method of running Strategy Mining uses the distributed evaluation features of ECJ. For more details on that see the parallel processes chapter in the [ECJ manual (pdf)](https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf).
 2. Notes on apefight_distributed.sh
     1. In the bash script that will be run using `sbatch`, store the nodes being used with this command:

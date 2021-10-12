@@ -20,11 +20,7 @@ public void eval(EvolutionState state, int thread, GPData input, ADFStack stack,
 
     ApeFight sim = ((ApeFightMasonProblem)problem).simstate;
 
-    if ((double) sim.countFighting() / sim.getNumPrimates() <= 0.5) {
-        simData.result = true;
-    } else {
-        simData.result = false;
-    }
+    simData.result = sim.minorityFighting();
 }
 public int expectedChildren() { return 0; }
 }

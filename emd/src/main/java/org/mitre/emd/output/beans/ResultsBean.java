@@ -10,22 +10,19 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 
 public class ResultsBean implements OutputBean, Serializable {
     Integer gen;
-    String parsedRule;
     String rule;
     Double fitness;
     ArrayList<Integer> fitData = new ArrayList<>();
 
-    public static final String[] header = { "Gen", "parsedRule", "rule", "Fitness", "fitData"};
+    public static final String[] header = { "Gen", "rule", "Fitness", "fitData"};
     public static final String[] fieldMapping = new String[] {
             "gen",
-            "parsedRule",
             "rule",
             "fitness",
             "fitData"
     };
     //TODO: set cell processors to do desired decimal formatting
     public static final CellProcessor[] processors = new CellProcessor[]{
-            new NotNull(),
             new NotNull(),
             new NotNull(),
             new NotNull(),
@@ -36,9 +33,8 @@ public class ResultsBean implements OutputBean, Serializable {
     }
 
 
-    public ResultsBean(Integer gen, String parsedRule, String rule, Double fitness, ArrayList<Integer> fitData){
+    public ResultsBean(Integer gen, String rule, Double fitness, ArrayList<Integer> fitData){
         this.gen = gen;
-        this.parsedRule = parsedRule;
         this.rule = rule;
         this.fitness = fitness;
         this.fitData = fitData;
@@ -50,14 +46,6 @@ public class ResultsBean implements OutputBean, Serializable {
 
     public void setGen(Integer gen) {
         this.gen = gen;
-    }
-
-    public String getParsedRule() {
-        return parsedRule;
-    }
-
-    public void setParsedRule(String parsedRule) {
-        this.parsedRule = parsedRule;
     }
 
     public String getRule() {
@@ -89,12 +77,12 @@ public class ResultsBean implements OutputBean, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResultsBean that = (ResultsBean) o;
-        return gen.equals(that.gen) && parsedRule.equals(that.parsedRule) && rule.equals(that.rule) && fitness.equals(that.fitness) && fitData.equals(that.fitData);
+        return gen.equals(that.gen) && rule.equals(that.rule) && fitness.equals(that.fitness) && fitData.equals(that.fitData);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(gen, parsedRule, rule, fitness, fitData);
+        int result = Objects.hash(gen, rule, fitness, fitData);
         return result;
     }
 }

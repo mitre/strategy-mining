@@ -20,15 +20,7 @@ public void eval(EvolutionState state, int thread, GPData input, ADFStack stack,
 
     ApeFight sim = ((ApeFightMasonProblem)problem).simstate;
 
-    if (sim.countFighting() > 0) {
-        if (sim.meanFightingRank() - sim.currentPrimate.myRank < sim.currentPrimate.myHierThold) {
-            simData.result = true;
-        } else {
-            simData.result = false;
-        }
-    } else {
-        simData.result = true;
-    }
+    simData.result = sim.rankInThreshold();
 }
 public int expectedChildren() { return 0; }
 }

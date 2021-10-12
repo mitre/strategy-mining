@@ -18,7 +18,8 @@ factorsPath = /home/STRATEGY-MINING/input/apefight/models/factors_ape.nls
 runDistributed = true
 netlogo.extensions.dir = /home/STRATEGY-MINING/NetLogo 6.1.1/app/extensions/.bundled
 
-outputPath = /home/STRATEGY-MINING/output/output.csv
+outputFileName = output.csv
+outputFileDirectory = /home/STRATEGY-MINING/output/
 inputPath = /home/STRATEGY-MINING/input/apefight/ApeDesignPoints.csv
 rowNumber = 3
 

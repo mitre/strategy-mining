@@ -11,26 +11,11 @@ java {
 }
 
 group = 'org.mitre'
-description = 'strategy_mining'
+description = 'strategy-mining'
 version = '1.0-SNAPSHOT'
-applicationName = 'strategy_mining'  // the name that's used for the build/distribution. This does not include the version number.
+applicationName = 'strategy-mining'  // the name that's used for the build/distribution. This does not include the version number.
 
 repositories {
-    // TODO this is MITRE specific but useful for referencing Mason and ECJ, figure out how to remove
-    // Then look in Artifactory
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/gradle-plugins'
-    }
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-release'
-    }
-    maven {
-        url = 'https://artifacts.mitre.org:443/artifactory/java-libs-snapshot'
-    }
-    maven {
-        url 'https://artifacts.mitre.org:443/artifactory/java-plugins-release'
-    }
-
     // Look at Maven Central
     maven {
         url = 'https://plugins.gradle.org/m2/'
@@ -39,26 +24,26 @@ repositories {
     // Look on Github for repositories
     maven { url 'https://jitpack.io' }
 
+    // For NetLogo
     maven {
         url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
-        // https://cloudsmith.io/orgs/netlogo/
+//        content {includeModule('org','netlogo')}  // TODO test that this works
     }
 
-    // Netlogo and all of it's dependencies are in ../lib
-//    flatDir {
-//        dirs '../lib'
-//    }
+    // For ECJ dependencies
+    flatDir {
+        dirs '../lib/'
+    }
+
 }
 
 dependencies {
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'edu.gmu.cs:mason:20'  // for Maven internally
-//    implementation 'com.github.eclab:mason:20'  // for Github
-    implementation 'edu.gmu.cs:ecj:27'
-    implementation 'org:netlogo:6.1.1'
-//    implementation files('../lib/netlogo-6.1.1.jar')
-//    implementation files('../lib/*.jar')
-    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
+//    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
+    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
+//    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
+//    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
     implementation 'commons-cli:commons-cli:1.4'
@@ -66,7 +51,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.ow2.asm/asm-commons
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '9.1'
     implementation group: 'org.ow2.asm', name: 'asm', version: '9.1'
-    implementation 'org.ow2.asm:asm-util:9.1'
+    implementation group: 'org.ow2.asm', name: 'asm-util', version:'9.1'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 
     // CSV dependency
@@ -85,7 +70,7 @@ application {
     mainClassName = 'org.mitre.strategy_mining.StrategyMining'
 
     // Setting the heap size to 8GB is a doubling of what Apefight uses (about 4GB), change this as necessary for other models
-    // --add-opens java.base/java.lang.ref=ALL-UNNAMED is a fix for running on Windows
+    // --add-opens java.base/java.lang.ref=ALL-UNNAMED is a fix for running with Java 16+
     applicationDefaultJvmArgs = ["-Xmx8G", "--add-opens", "java.base/java.lang.ref=ALL-UNNAMED"]
 }
 
@@ -102,7 +87,8 @@ tasks.named("distZip") {
 }
 
 run {
-     args = ["-f", "../input/apefight/experiment.apeFight.nlogo.params", "-op", "outputPath=../output/apefight.csv"]
+     args = ["-f", "../input/nms/experiment.nms.mason.params", "-op", "outputPath=../output/NMS.csv"]
+     // args = ["-f", "../input/apefight/experiment.apeFight.nlogo.params", "-op", "outputPath=../output/apefight.csv"]
 //	args = ["-f", "../input/apeFightMason/experiment.apeFight.mason.params", "-op", "outputPath=../output/apefight.csv"]
 }
 

@@ -18,8 +18,8 @@ public class ZandComboMason extends GPNode{
     public void eval(EvolutionState state, int thread, GPData input, ADFStack stack, GPIndividual individual, Problem problem) {
         SimData simData = (SimData) input;
 
-        Boolean inputOne = false;
-        Boolean inputTwo = false;
+        Boolean inputOne;
+        Boolean inputTwo;
         children[0].eval(state,thread,input,stack,individual,problem);
         inputOne = simData.result;
 
