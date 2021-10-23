@@ -4,15 +4,14 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import static org.objectweb.asm.Opcodes.ASM7;
-
 public class MethodReplacer extends ClassVisitor {
     private String mname;
     private String mdesc;
     private String cname;
     public MethodReplacer(ClassVisitor cv,
                           String mname) {
-        super(ASM7,cv);
+        super(7 << 16 | 0 << 8,cv);  // TODO This should be org.objectweb.asm.Opcodes.ASM7 but NetLogo uses ASM5 and we need to figure out how to have both 5 and 9.
+
         this.mname = mname;
     }
     public void visit(int version, int access,

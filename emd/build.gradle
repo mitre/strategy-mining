@@ -37,17 +37,23 @@ repositories {
        }
    }
 
-    // For NetLogo
-    maven {
-        url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
-        // You can see which versions are online here: https://cloudsmith.io/~netlogo/repos/netlogo/packages/
-//        content {includeModule('org.nlogo','netlogo')}  // Commented out since this doesn't seem to work for netlogo
+    flatDir {
+        dirs '../lib/' // For ECJ dependencies
     }
 
-    // For ECJ dependencies
     flatDir {
-        dirs '../lib/'
+        dirs '../lib/NetLogo/'
     }
+
+    // For NetLogo
+//    maven {
+//        url = 'https://dl.cloudsmith.io/public/netlogo/netlogo/maven/'
+//        // You can see which versions are online here: https://cloudsmith.io/~netlogo/repos/netlogo/packages/
+////        content {includeModule('org.nlogo','netlogo')}  // Commented out since this doesn't seem to work for netlogo
+//    }
+
+
+
 }
 
 dependencies {
@@ -56,8 +62,19 @@ dependencies {
 //    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
     implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
 //    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
-//    implementation 'org.nlogo:netlogo:6.1.1'
-    implementation 'org.nlogo:netlogoheadless:6.2.0-d27b502'  // This version is just for headless Netlogo and includes dependencies
+    implementation 'org.nlogo:netlogo:6.2.0'
+//    implementation 'org.nlogo:netlogoheadless:6.2.0-d27b502'  // This version is just for headless Netlogo and includes dependencies
+
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'  // Netlogo needs this
+    implementation group: 'org.netbeans.api', name: 'org-openide-util', version: 'RELEASE125'  // Netlogo needs this
+    implementation group: 'org.picocontainer', name: 'picocontainer', version: '2.13.6'  // Netlogo needs this
+    implementation group: 'com.typesafe', name: 'config', version: '1.4.1'  // Picocontainer needs this
+    implementation group: 'org.parboiled', name: 'parboiled_2.12', version: '2.1.3'  // Netlogo needs this
+
+
+
+
+
 //    implementation 'org.nlogo:netlogo:6.2.0-d27b502'  // Non-headless Netlogo. Includes dependencies but the jogamp ones don't match whats on the https://maven.jzy3d.org/releases/ repository
 //    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
