@@ -44,7 +44,7 @@ The following are the steps needed to to build and run a model.
     gradle build -Dparams="../input/apefight/experiment.apeFight.nlogo.params"
     ```
 
-    - The argument `-PparamsFile="..."` tells the build where to find the params file for the model you're building. The params file path can be either fully qualified or relative to the `emd` directory as shown here.
+    - The argument `-Dparams="..."` tells the build where to find the params file for the model you're building. The params file path can be either fully qualified or relative to the `emd` directory as shown here.
 
 ### Running the model
 
@@ -108,7 +108,7 @@ Building the project creates an application bundle in `strategy_mining/build/dis
 2. Navigate to that location
 3. Run with the desired program arguments (similar to [running with Gradle](#Run-with-Gradle))
 ```
-./strategy_mining-1.0-SNAPSHOT/bin/strategy_mining -f <path_to>/strategy-mining/input/apefight/experiment.apeFight.nlogo.params
+./strategy-mining-1.0-SNAPSHOT/bin/strategy_mining -f <path_to>/strategy-mining/input/apefight/experiment.apeFight.nlogo.params
 ```
 
 ### Distributed run on an HPC cluster with Slurm scheduler
@@ -236,16 +236,17 @@ input/<project>
 ├── <project>.sh # for single HPC runs
 ├── <project>_distributed.sh # for distributed HPC runs
 ├── model.nlogo
-├── parent.params
-└── yourparams.params
+├── parent.params  # ECJ setup parameters
+├── factors.model.platform.params  # Factors for your model. For NetLogo models this is generated automatically.
+└── experiment.model.platform.params  # Parameters for running your model. Settings here will override settings in other params files
 output/<project>
 └──  slurm/ # for HPC runs this is where the output will go
 strategy_mining/src/main/java/org/mitre/strategy_mining
 └── StrategyMining.java
 ```
 
-### Model design with Mason
-
+### Model design with MASON
+See the classes models/ape-fight and ApeFightMasonProblem for an example of how to use this with the MASON agent-based modeling framework. Using MASON for the ape fight model results in more than a 50x speed-up compared to NetLogo.
 
 # Public Release
 ©2021 The MITRE Corporation. 

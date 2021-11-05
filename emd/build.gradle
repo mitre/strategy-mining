@@ -57,33 +57,26 @@ repositories {
 }
 
 dependencies {
-    // This dependencies are used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'edu.gmu.cs:mason:20'  // for Maven internally
+    implementation 'edu.gmu.cs:mason:20'  // for MASON in /lib
 //    implementation 'com.github.eclab:mason:v20'  // for Github via JitPack
-    implementation 'edu.gmu.cs:ecj:27'  // for Maven internally
+    implementation 'edu.gmu.cs:ecj:27'  // for ECJ in /lib
 //    implementation 'com.github.GMUEClab:ecj:v27'  // for Github via JitPack
-    implementation 'org.nlogo:netlogo:6.2.0'
-//    implementation 'org.nlogo:netlogoheadless:6.2.0-d27b502'  // This version is just for headless Netlogo and includes dependencies
+    implementation 'org.nlogo:netlogo:6.2.0'  // // Non-headless Netlogo. Includes dependencies but the jogamp ones don't match whats on the https://maven.jzy3d.org/releases/ repository
+//    implementation 'org.nlogo:netlogoheadless:6.2.0-d27b502'  // This version is just for headless Netlogo and includes dependencies but doesn't seem to work
 
+    // NetLogo dependencies
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'  // Netlogo needs this
     implementation group: 'org.netbeans.api', name: 'org-openide-util', version: 'RELEASE125'  // Netlogo needs this
     implementation group: 'org.picocontainer', name: 'picocontainer', version: '2.13.6'  // Netlogo needs this
     implementation group: 'com.typesafe', name: 'config', version: '1.4.1'  // Picocontainer needs this
     implementation group: 'org.parboiled', name: 'parboiled_2.12', version: '2.1.3'  // Netlogo needs this
-
-
-
-
-
-//    implementation 'org.nlogo:netlogo:6.2.0-d27b502'  // Non-headless Netlogo. Includes dependencies but the jogamp ones don't match whats on the https://maven.jzy3d.org/releases/ repository
-//    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
     implementation 'org.scala-lang:scala-library:2.12.8'
     implementation 'org.scala-lang.modules:scala-parser-combinators_2.12:1.0.5'
 
+    // ECJ dependencies
+//    implementation 'org.spiderland.psh:pshecj:1'  // This is a modified version of PSH to use with ECJ. Source at: https://github.com/jonklein/Psh
+
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-    implementation group: 'org.ow2.asm', name: 'asm', version: '9.1'
-    implementation group: 'org.ow2.asm', name: 'asm-commons', version: '9.1'
-    implementation 'org.ow2.asm:asm-util:9.1'
 
     implementation group: 'org.apache.spark', name: 'spark-mllib_2.12', version: '3.1.1'
     implementation group: 'org.apache.spark', name: 'spark-core_2.12', version: '3.1.1'
@@ -94,11 +87,6 @@ dependencies {
     // Logging Dependencies
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.1'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.1'
-
-    // For MASON example, these need the TUDelft repository
-//    implementation 'java3d:j3d-core-utils:1.5.1'
-//    implementation 'java3d:j3d-core:1.5.1'
-//    implementation 'java3d:vecmath:1.5.1'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
@@ -139,3 +127,5 @@ test {
 compileEMD.dependsOn runEMD
 test.dependsOn compileEMD
 build.dependsOn compileEMD
+compileTestJava.dependsOn compileEMD
+jar.dependsOn compileEMD

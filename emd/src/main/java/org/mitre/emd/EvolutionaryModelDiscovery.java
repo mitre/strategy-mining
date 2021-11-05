@@ -6,18 +6,12 @@ import org.apache.log4j.Logger;
 import org.mitre.emd.utility.EmdConfiguration;
 import org.mitre.emd.utility.EmdConfigurationAdapter;
 import org.mitre.emd.utility.FactorsConfiguration;
-import org.mitre.emd.utility.MethodReplacer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.*;
 import java.nio.file.*;
-
-//import static org.objectweb.asm.Opcodes.ASM7;
 
 /**
  * The EvolutionaryModelDiscovery class should only be called to run the main method.
@@ -165,40 +159,6 @@ public class EvolutionaryModelDiscovery {
     }
 
     private void writeRulesFiles() {
-        // Create factors files based on the EMD configuration file for MASON models
-        // TODO this is not quite working yet
-        if(emdConfiguration != null){
-            for(FactorsConfiguration factor: emdConfiguration.getFactors()){
-                String classToClone = "org.mitre.emd.Factor";  // This is the class you want to clone and put the method from the other class into.
-                String classToRead = factor.getClassName();  // This is the class we read a method from
-                String classToReadPackage = factor.getClassPackage();  // This is the package that the classToRead is in
-                classToRead = classToReadPackage + "." + classToRead;
-                String methodToRead = factor.getEvalMethod();  // This is the method we want to read in classToRead
-                String classToWrite = factor.getClassName() + "Factor";  // Name of the new class we're writing
-                try {
-                    ClassWriter cw = new ClassWriter(0);
-                    ClassReader cr = new ClassReader(classToClone);
-                    ClassVisitor cv = new ClassVisitor(7 << 16 | 0 << 8, cw){};
-
-                    ClassReader otherCr = new ClassReader(classToRead);
-                    ClassVisitor studentCv = new ClassVisitor(7 << 16 | 0 << 8, cv) {
-                    };
-                    MethodReplacer mr = new MethodReplacer(studentCv, methodToRead);
-                    otherCr.accept(mr, 0);
-
-                    cr.accept(cv, 0);
-
-                    Transformer transformer = new Transformer();
-                    byte[] bytes = cw.toByteArray();
-                    transformer.writeClass(bytes, classToWrite);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return;
-        }
-
         // Create factors files for NetLogo models
         try {
             //this data object will store all of the information needed for each method in the factors file
