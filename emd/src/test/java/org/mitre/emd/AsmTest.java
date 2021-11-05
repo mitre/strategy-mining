@@ -11,9 +11,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import static org.objectweb.asm.Opcodes.ASM7;
+//import static org.objectweb.asm.Opcodes.ASM7;
 
 public class AsmTest {
+    final static int ASM7 = 7 << 16 | 0 << 8;
 
 //    @Test
     public void testMethodReplacer() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {

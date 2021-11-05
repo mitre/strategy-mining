@@ -140,14 +140,14 @@ public class Students extends SimState {
                 studentB = students.get(random.nextInt(students.numObjs));
             } while (student == studentB);
             double buddiness = random.nextDouble();
-            buddies.addEdge(student, studentB, new Double(buddiness));
+            buddies.addEdge(student, studentB, buddiness);
 
             // who does he dislike?
             do {
                 studentB = students.get(random.nextInt(students.numObjs));
             } while (student == studentB);
             buddiness = random.nextDouble();
-            buddies.addEdge(student, studentB, new Double(-buddiness));
+            buddies.addEdge(student, studentB, buddiness);
         }
 
         load3DStudents();

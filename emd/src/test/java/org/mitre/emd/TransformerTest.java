@@ -16,6 +16,9 @@ import static org.objectweb.asm.Opcodes.*;
 
 
 public class TransformerTest {
+    final static int ASM7 = 7 << 16 | 0 << 8;
+    final static int ASM9 = 9 << 16 | 0 << 8;
+
     @Test
     public void testTransformer() throws Exception {
         Transformer transformer = new Transformer();
