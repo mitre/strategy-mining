@@ -1,0 +1,30 @@
+parent.0 = parent.params
+
+quit-on-run-complete = false #don't stop if I find a perfect individual
+
+eval.problem = org.mitre.emd.RebellionProblem
+gp.problem.data = org.mitre.emd.GeneralData
+
+generations = 10
+gp.tree.print-style = c
+pop.subpop.0.size = 10
+breedthreads = 5
+evalthreads = 5
+seed.0 = 1
+seed.1 = 2
+seed.2 = 3
+seed.3 = 4
+seed.4 = 5
+
+gp.koza.half.min-depth = 3
+gp.koza.half.max-depth = 5
+
+runDistributed = false
+
+netlogo.extensions.dir = /Applications/NetLogo 6.1.1/extensions/.bundled
+
+modelPath = ../input/rebellion/Rebellion_02.nlogo
+factorsPath = ../input/rebellion/models/factors.nls
+outputPath = ../output/output.csv
+replication = 1
+ticks = 500

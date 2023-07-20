@@ -1,0 +1,49 @@
+;; @EMD @Factor @return-type=top @parameter-type=attr @parameter-type=thresh
+to-report greaterThan [a b]
+    report a > b
+end
+
+;; @EMD @Factor @return-type=attr @parameter-type=attr @parameter-type=attr
+to-report multiply [a b]
+    report a * b
+end
+
+;; @EMD @Factor @return-type=attr @parameter-type=attr @parameter-type=attr
+to-report add [a b]
+    report a + b
+end
+
+;; @EMD @Factor @return-type=attr @parameter-type=attr @parameter-type=attr
+to-report subtract [a b]
+    report a - b
+end
+
+;; @EMD @Factor @return-type=attr
+to-report reportArrestProb
+    report estimated-arrest-probability
+end
+
+;; @EMD @Factor @return-type=attr
+to-report reportAversion
+    report risk-aversion
+end
+
+;; @EMD @Factor @return-type=attr
+to-report reportGrievance
+    report grievance
+end
+
+;; @EMD @Factor @return-type=attr
+to-report propLinksActive
+    report (count link-neighbors with [active?]) / (count link-neighbors)
+end
+
+;; @EMD @Factor @return-type=attr
+to-report propNeighborsActive
+    report (count (agents-on neighborhood) with [active?]) / (count (agents-on neighborhood))
+end
+
+;; @EMD @Factor @return-type=thresh
+to-report reportThreshold
+    report threshold
+end
